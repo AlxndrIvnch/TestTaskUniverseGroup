@@ -8,12 +8,29 @@
 @MainActor
 struct SplashVM {
     
-    let onLoaded: SimpleClosure<[String]>
+    var onError: SimpleClosure<String>?
+    
+    private let dataService: DataServiceProtocol
+    private let itemsRepository: ItemsRepositoryProtocol
+    private let onLoadedData: EmptyClosure
+    
+    init(dataService: DataServiceProtocol,
+         itemsRepository: ItemsRepositoryProtocol,
+         onLoadedData: @escaping EmptyClosure) {
+        self.dataService = dataService
+        self.itemsRepository = itemsRepository
+        self.onLoadedData = onLoadedData
+    }
     
     func loadData() {
-        Task { //TODO: Get from service
-            try await Task.sleep(for: .seconds(3))
-            onLoaded([])
+        Task {
+            do {
+                let items = try await dataService.loadData()
+                await itemsRepository.save(items)
+                onLoadedData()
+            } catch {
+                onError?("Data loading failed. Please try again later.")
+            }
         }
     }
 }

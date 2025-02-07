@@ -14,7 +14,7 @@ final class SplashVC: BaseVC {
 
     init(viewModel: SplashVM) {
         self.viewModel = viewModel
-        super.init(nibName: nil, bundle: nil)
+        super.init()
     }
     
     required init?(coder: NSCoder) {
@@ -27,6 +27,6 @@ final class SplashVC: BaseVC {
     }
     
     override func setupView() {
-        view.backgroundColor = .yellow
+        view.backgroundColor = .splashScreenBackground
     }
 }

@@ -10,7 +10,7 @@
 //    func start()
 //}
 
-import UIKit.UIWindow
+import UIKit
 
 @MainActor
 final class AppCoordinator {
@@ -20,15 +20,22 @@ final class AppCoordinator {
     init(window: UIWindow) {
         self.window = window
     }
-
+    
     func start() {
-        let splashVM = SplashVM(onLoaded: showMainScreen)
+        showSplashScreen(onLoadedData: showMainFlow)
+    }
+
+    private func showSplashScreen(onLoadedData: @escaping EmptyClosure) {
+        let splashVM = SplashVM(dataService: DataService.shared,
+                                itemsRepository: ItemsRepository.shared,
+                                onLoadedData: onLoadedData)
         let splashVC = SplashVC(viewModel: splashVM)
         window.rootViewController = splashVC
         window.makeKeyAndVisible()
     }
     
-    private func showMainScreen(with data: [String]) {
-        debugPrint("Show Main")
+    private func showMainFlow() {
+        let tabBarCoordinator = TabBarCoordinator(window: window)
+        tabBarCoordinator.start()
     }
 }

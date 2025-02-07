@@ -17,6 +17,18 @@
 		11A555342D5654E700FA631A /* SplashVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A555332D5654E500FA631A /* SplashVM.swift */; };
 		11A555372D565B4700FA631A /* Typealiases.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A555362D565B4600FA631A /* Typealiases.swift */; };
 		11A555392D565C0900FA631A /* BaseVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A555382D565C0800FA631A /* BaseVC.swift */; };
+		11A5553B2D56671300FA631A /* DataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A5553A2D5666C900FA631A /* DataService.swift */; };
+		11A5553E2D566AF500FA631A /* ItemsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A5553D2D566AF200FA631A /* ItemsVC.swift */; };
+		11A555402D566AFB00FA631A /* AllItemsVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A5553F2D566AF700FA631A /* AllItemsVM.swift */; };
+		11A555472D566B7300FA631A /* FavoriteItemsVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A555462D566B7000FA631A /* FavoriteItemsVM.swift */; };
+		11A555492D566E4100FA631A /* ItemsVMProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A555482D566E4100FA631A /* ItemsVMProtocol.swift */; };
+		11A5554B2D5673A100FA631A /* UITableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A5554A2D5673A000FA631A /* UITableView.swift */; };
+		11A5554D2D56753A00FA631A /* SelectorToClosure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A5554C2D56753900FA631A /* SelectorToClosure.swift */; };
+		11A555532D567A1C00FA631A /* Optional.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A555522D567A1B00FA631A /* Optional.swift */; };
+		11A555572D56838600FA631A /* Collection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A555562D56838500FA631A /* Collection.swift */; };
+		11A555592D5683F300FA631A /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A555582D5683F100FA631A /* Item.swift */; };
+		11A5555B2D56897600FA631A /* ItemsRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A5555A2D56897500FA631A /* ItemsRepository.swift */; };
+		11A5555D2D569B6D00FA631A /* SwipeActionVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A5555C2D569B6D00FA631A /* SwipeActionVM.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +43,18 @@
 		11A555332D5654E500FA631A /* SplashVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashVM.swift; sourceTree = "<group>"; };
 		11A555362D565B4600FA631A /* Typealiases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Typealiases.swift; sourceTree = "<group>"; };
 		11A555382D565C0800FA631A /* BaseVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseVC.swift; sourceTree = "<group>"; };
+		11A5553A2D5666C900FA631A /* DataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataService.swift; sourceTree = "<group>"; };
+		11A5553D2D566AF200FA631A /* ItemsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemsVC.swift; sourceTree = "<group>"; };
+		11A5553F2D566AF700FA631A /* AllItemsVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllItemsVM.swift; sourceTree = "<group>"; };
+		11A555462D566B7000FA631A /* FavoriteItemsVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteItemsVM.swift; sourceTree = "<group>"; };
+		11A555482D566E4100FA631A /* ItemsVMProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemsVMProtocol.swift; sourceTree = "<group>"; };
+		11A5554A2D5673A000FA631A /* UITableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITableView.swift; sourceTree = "<group>"; };
+		11A5554C2D56753900FA631A /* SelectorToClosure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectorToClosure.swift; sourceTree = "<group>"; };
+		11A555522D567A1B00FA631A /* Optional.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Optional.swift; sourceTree = "<group>"; };
+		11A555562D56838500FA631A /* Collection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Collection.swift; sourceTree = "<group>"; };
+		11A555582D5683F100FA631A /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
+		11A5555A2D56897500FA631A /* ItemsRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemsRepository.swift; sourceTree = "<group>"; };
+		11A5555C2D569B6D00FA631A /* SwipeActionVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeActionVM.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +97,10 @@
 		11A555142D563A6100FA631A /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				11A555562D56838500FA631A /* Collection.swift */,
+				11A555522D567A1B00FA631A /* Optional.swift */,
+				11A5554A2D5673A000FA631A /* UITableView.swift */,
+				11A5554C2D56753900FA631A /* SelectorToClosure.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -80,6 +108,7 @@
 		11A555152D563A6100FA631A /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				11A555582D5683F100FA631A /* Item.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -88,6 +117,7 @@
 			isa = PBXGroup;
 			children = (
 				11A555302D5654A700FA631A /* Splash */,
+				11A5553C2D566AD200FA631A /* Items */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -95,6 +125,8 @@
 		11A555192D563A6100FA631A /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				11A5555A2D56897500FA631A /* ItemsRepository.swift */,
+				11A5553A2D5666C900FA631A /* DataService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -144,10 +176,22 @@
 		11A555352D565B1F00FA631A /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				11A5555C2D569B6D00FA631A /* SwipeActionVM.swift */,
 				11A555382D565C0800FA631A /* BaseVC.swift */,
 				11A555362D565B4600FA631A /* Typealiases.swift */,
 			);
 			path = Utility;
+			sourceTree = "<group>";
+		};
+		11A5553C2D566AD200FA631A /* Items */ = {
+			isa = PBXGroup;
+			children = (
+				11A5553D2D566AF200FA631A /* ItemsVC.swift */,
+				11A555482D566E4100FA631A /* ItemsVMProtocol.swift */,
+				11A5553F2D566AF700FA631A /* AllItemsVM.swift */,
+				11A555462D566B7000FA631A /* FavoriteItemsVM.swift */,
+			);
+			path = Items;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -226,14 +270,26 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				11A5553B2D56671300FA631A /* DataService.swift in Sources */,
 				11A5552D2D56510800FA631A /* AppCoordinator.swift in Sources */,
 				11A555322D5654DE00FA631A /* SplashVC.swift in Sources */,
 				11A555372D565B4700FA631A /* Typealiases.swift in Sources */,
+				11A5553E2D566AF500FA631A /* ItemsVC.swift in Sources */,
+				11A5555D2D569B6D00FA631A /* SwipeActionVM.swift in Sources */,
+				11A5555B2D56897600FA631A /* ItemsRepository.swift in Sources */,
 				11A555392D565C0900FA631A /* BaseVC.swift in Sources */,
+				11A555532D567A1C00FA631A /* Optional.swift in Sources */,
 				11A555262D563A6100FA631A /* SceneDelegate.swift in Sources */,
+				11A555572D56838600FA631A /* Collection.swift in Sources */,
 				11A5552F2D5651DC00FA631A /* TabBarCoordinator.swift in Sources */,
+				11A555402D566AFB00FA631A /* AllItemsVM.swift in Sources */,
+				11A555472D566B7300FA631A /* FavoriteItemsVM.swift in Sources */,
 				11A555282D563A6100FA631A /* AppDelegate.swift in Sources */,
+				11A555592D5683F300FA631A /* Item.swift in Sources */,
 				11A555342D5654E700FA631A /* SplashVM.swift in Sources */,
+				11A555492D566E4100FA631A /* ItemsVMProtocol.swift in Sources */,
+				11A5554B2D5673A100FA631A /* UITableView.swift in Sources */,
+				11A5554D2D56753A00FA631A /* SelectorToClosure.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
