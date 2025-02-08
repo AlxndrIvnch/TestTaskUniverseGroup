@@ -14,27 +14,38 @@ final class SplashVC: BaseVC {
     
     private let progressView: UIProgressView = {
         let progressView = UIProgressView()
-        progressView.trackTintColor = .white.withAlphaComponent(0.3)
-        progressView.progressTintColor = .white
+        progressView.trackTintColor = .systemGray.withAlphaComponent(0.3)
+        progressView.progressTintColor = .systemGray6
         return progressView
     }()
     
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Splash Screen"
-        label.font = UIFont.boldSystemFont(ofSize: 36)
-        label.textColor = .white
+        if #available(iOS 17.0, *) {
+            label.font = UIFont.preferredFont(forTextStyle: .extraLargeTitle)
+        } else {
+            label.font = UIFont.preferredFont(forTextStyle: .largeTitle)
+        }
+        label.textColor = .systemGray6
         label.textAlignment = .center
         return label
     }()
     
     private let errorLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
+        label.font = UIFont.preferredFont(forTextStyle: .headline)
         label.textColor = .systemRed
         label.textAlignment = .center
         label.numberOfLines = 0
         return label
+    }()
+    
+    private let gradientLayer: CAGradientLayer = {
+        let layer = CAGradientLayer()
+        let baseColor = UIColor.splashScreenBackground.cgColor
+        layer.colors = [baseColor, baseColor, baseColor]
+        return layer
     }()
 
     init(viewModel: SplashVM) {
@@ -52,7 +63,20 @@ final class SplashVC: BaseVC {
     }
     
     override func setupView() {
-        view.backgroundColor = .splashScreenBackground
+        view.layer.insertSublayer(gradientLayer, above: view.layer)
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        gradientLayer.frame = view.bounds
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        Task {
+            try await Task.sleep(for: .seconds(0.5))
+            animateGradientTransition()
+        }
     }
     
     override func setupConstraints() {
@@ -83,5 +107,18 @@ final class SplashVC: BaseVC {
         viewModel.onError = { [weak self] in
             self?.errorLabel.text = $0
         }
+    }
+    
+    private func animateGradientTransition() {
+        let finalColors: [CGColor] = [UIColor.systemBlue.cgColor,
+                                      UIColor.splashScreenBackground.cgColor,
+                                      UIColor.systemPurple.cgColor]
+        let colorAnimation = CABasicAnimation(keyPath: "colors")
+        colorAnimation.fromValue = gradientLayer.colors
+        colorAnimation.toValue = finalColors
+        colorAnimation.duration = 1
+        colorAnimation.fillMode = .forwards
+        colorAnimation.isRemovedOnCompletion = false
+        gradientLayer.add(colorAnimation, forKey: "colorsChange")
     }
 }

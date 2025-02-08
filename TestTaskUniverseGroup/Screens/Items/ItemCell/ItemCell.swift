@@ -19,6 +19,7 @@ final class ItemCell: UITableViewCell {
         contentConfig.text = viewModel?.text
         let imageName = "star\(viewModel?.isFavorite == true ? ".fill" : "")"
         contentConfig.image = UIImage(systemName: imageName)
+        contentConfig.imageProperties.tintColor = .systemBlue
         contentConfiguration = contentConfig
     }
 }

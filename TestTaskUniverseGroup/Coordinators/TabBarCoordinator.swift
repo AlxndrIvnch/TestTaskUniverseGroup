@@ -10,7 +10,7 @@ import UIKit
 @MainActor
 final class TabBarCoordinator {
     
-    private let window: UIWindow
+    private weak var window: UIWindow?
     
     init(window: UIWindow) {
         self.window = window
@@ -19,23 +19,24 @@ final class TabBarCoordinator {
     func start() {
         let tabBarController = UITabBarController()
         
-        let allItemsVM = AllItemsVM(itemsRepository: ItemsRepository.shared)
-        let allItemsVC = ItemsVC(viewModel: allItemsVM)
-        let allItemsNC = UINavigationController(rootViewController: allItemsVC)
+        let allItemsNC = UINavigationController()
         allItemsNC.tabBarItem = UITabBarItem(title: "All",
                                              image: UIImage(systemName: "list.bullet"),
                                              tag: 0)
+        let allItemsCoordinator = AllItemsCoordinator(navigationController: allItemsNC)
+        allItemsCoordinator.start()
         
-        let favoriteItemsVM = FavoriteItemsVM(itemsRepository: ItemsRepository.shared)
-        let favoriteItemsVC = ItemsVC(viewModel: favoriteItemsVM)
-        let favoriteItemsNC = UINavigationController(rootViewController: favoriteItemsVC)
+        let favoriteItemsNC = UINavigationController()
         favoriteItemsNC.tabBarItem = UITabBarItem(title: "Favorites",
                                                   image: UIImage(systemName: "star.fill"),
                                                   tag: 1)
+        let favoriteItemsCoordinator = FavoriteItemsCoordinator(navigationController: favoriteItemsNC)
+        favoriteItemsCoordinator.start()
+       
         
         tabBarController.viewControllers = [allItemsNC, favoriteItemsNC]
         
-        window.rootViewController = tabBarController
-        window.makeKeyAndVisible()
+        window?.rootViewController = tabBarController
+        window?.makeKeyAndVisible()
     }
 }

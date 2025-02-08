@@ -20,10 +20,10 @@ final class ItemsVC: BaseVC {
             self?.mark(asFavorite: true)
         }
         button.setTitleTextAttributes([.foregroundColor: UIColor.systemGreen,
-                                       .font: UIFont.boldSystemFont(ofSize: 16)],
+                                       .font: UIFont.preferredFont(forTextStyle: .headline)],
                                       for: .normal)
-        button.setTitleTextAttributes([.foregroundColor: UIColor.gray,
-                                       .font: UIFont.boldSystemFont(ofSize: 16)],
+        button.setTitleTextAttributes([.foregroundColor: UIColor.systemGray,
+                                       .font: UIFont.preferredFont(forTextStyle: .headline)],
                                       for: .disabled)
         button.isEnabled = false
         return button
@@ -31,16 +31,16 @@ final class ItemsVC: BaseVC {
     
     private lazy var removeFromFavoriteButton: UIBarButtonItem = {
         let button = UIBarButtonItem()
-        button.title = "Remove from Favorite"
+        button.title = "Remove from Favorites"
         button.style = .done
         button.addAction { [weak self] in
             self?.mark(asFavorite: false)
         }
-        button.setTitleTextAttributes([.foregroundColor: UIColor.red,
-                                       .font: UIFont.boldSystemFont(ofSize: 16)],
+        button.setTitleTextAttributes([.foregroundColor: UIColor.systemRed,
+                                       .font: UIFont.preferredFont(forTextStyle: .headline)],
                                       for: .normal)
-        button.setTitleTextAttributes([.foregroundColor: UIColor.gray,
-                                       .font: UIFont.boldSystemFont(ofSize: 16)],
+        button.setTitleTextAttributes([.foregroundColor: UIColor.systemGray,
+                                       .font: UIFont.preferredFont(forTextStyle: .headline)],
                                       for: .disabled)
         button.isEnabled = false
         return button
@@ -55,7 +55,7 @@ final class ItemsVC: BaseVC {
             setEditing(true, animated: true)
         }
         button.setTitleTextAttributes([.foregroundColor: UIColor.systemBlue,
-                                       .font: UIFont.systemFont(ofSize: 16)],
+                                       .font: UIFont.preferredFont(forTextStyle: .body)],
                                       for: .normal)
         return button
     }()
@@ -69,7 +69,7 @@ final class ItemsVC: BaseVC {
             setEditing(false, animated: true)
         }
         button.setTitleTextAttributes([.foregroundColor: UIColor.systemBlue,
-                                       .font: UIFont.boldSystemFont(ofSize: 16)],
+                                       .font: UIFont.preferredFont(forTextStyle: .headline)],
                                       for: .normal)
         return button
     }()
@@ -85,7 +85,7 @@ final class ItemsVC: BaseVC {
             updateToolbarButtons()
         }
         button.setTitleTextAttributes([.foregroundColor: UIColor.systemBlue,
-                                       .font: UIFont.systemFont(ofSize: 16)],
+                                       .font: UIFont.preferredFont(forTextStyle: .body)],
                                       for: .normal)
         return button
     }()
@@ -101,7 +101,7 @@ final class ItemsVC: BaseVC {
             updateToolbarButtons()
         }
         button.setTitleTextAttributes([.foregroundColor: UIColor.systemBlue,
-                                       .font: UIFont.systemFont(ofSize: 16)],
+                                       .font: UIFont.preferredFont(forTextStyle: .body)],
                                       for: .normal)
         return button
     }()
@@ -116,6 +116,7 @@ final class ItemsVC: BaseVC {
         tableView.allowsMultipleSelectionDuringEditing = true
         tableView.keyboardDismissMode = .onDrag
         tableView.sectionHeaderTopPadding = 0
+        tableView.cellLayoutMarginsFollowReadableWidth = true
         tableView.registerCell(with: ItemCell.self)
         return tableView
     }()
@@ -124,15 +125,11 @@ final class ItemsVC: BaseVC {
         let dataSource = UITableViewDiffableDataSource<Int, ItemCell.ViewModel>(tableView: tableView) { tableView, indexPath, cellVM in
             let cell: ItemCell = tableView.dequeueCell(for: indexPath)
             cell.viewModel = cellVM
+            cell.backgroundColor = .clear
             return cell
         }
         return dataSource
     }()
-    
-    private func updateTableView() {
-        let snapshot = viewModel.createSnapshot()
-        dataSource.apply(snapshot, animatingDifferences: tableView.isInViewHierarchy)
-    }
     
     private lazy var emptyView: UILabel = {
         let label = UILabel()
@@ -161,12 +158,15 @@ final class ItemsVC: BaseVC {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupToolBar()
-        updateTableView()
-        updateEmptyView()
     }
     
     override func setupView() {
-        view.backgroundColor = .white
+        view.backgroundColor = .secondarySystemBackground
+    }
+    
+    override func viewIsAppearing(_ animated: Bool) {
+        super.viewIsAppearing(animated)
+        updateTableView()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -225,15 +225,13 @@ final class ItemsVC: BaseVC {
         view.addSubview(tableView)
         tableView.snp.makeConstraints { make in
             make.top.centerX.equalTo(safeArea)
-            make.width.equalTo(safeArea).priority(.high)
-            make.width.lessThanOrEqualTo(800)
+            make.width.equalTo(view.readableContentGuide)
             make.bottom.equalToSuperview()
         }
         view.addSubview(emptyView)
         emptyView.snp.makeConstraints { make in
-            make.width.equalTo(220)
-            make.height.equalTo(125)
             make.center.equalToSuperview()
+            make.width.lessThanOrEqualToSuperview().offset(-48)
         }
         view.addSubview(activityIndicator)
         activityIndicator.snp.makeConstraints { make in
@@ -245,7 +243,6 @@ final class ItemsVC: BaseVC {
         viewModel.onUpdateUI = { [weak self] in
             guard let self else { return }
             updateTableView()
-            updateEmptyView()
             updateToolbarButtons()
         }
         viewModel.onLoading = { [weak self] isLoading in
@@ -259,6 +256,13 @@ final class ItemsVC: BaseVC {
         }
     }
     
+    private func updateTableView() {
+        guard tableView.isInViewHierarchy else { return }
+        let snapshot = viewModel.createSnapshot()
+        dataSource.apply(snapshot, animatingDifferences: true)
+        updateEmptyView()
+    }
+    
     private func updateEmptyView() {
         emptyView.isHidden = !tableView.isEmpty
     }
@@ -266,7 +270,7 @@ final class ItemsVC: BaseVC {
     private func updateNavigationBarButtons(_ animated: Bool = true) {
         let rightBarButton = isEditing ? doneButton : selectButton
         navigationItem.setRightBarButton(rightBarButton, animated: animated)
-        if isEditing {
+        if isEditing && !tableView.isEmpty {
             let leftBarButton = tableView.isAllCellsSelected ? deselectAllButton : selectAllButton
             navigationItem.setLeftBarButton(leftBarButton, animated: animated)
         } else {

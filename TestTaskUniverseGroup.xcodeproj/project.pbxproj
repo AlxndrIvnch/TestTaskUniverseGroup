@@ -33,6 +33,8 @@
 		11A555632D57808B00FA631A /* ItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A555622D57808A00FA631A /* ItemCell.swift */; };
 		11A555652D5780A200FA631A /* ItemCellVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A555642D5780A000FA631A /* ItemCellVM.swift */; };
 		11A555672D578F3C00FA631A /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A555662D578F3A00FA631A /* UIView.swift */; };
+		11A5556B2D57B6BA00FA631A /* AllItemsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A5556A2D57B6B900FA631A /* AllItemsCoordinator.swift */; };
+		11A5556D2D57B6C000FA631A /* FavoriteItemsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A5556C2D57B6C000FA631A /* FavoriteItemsCoordinator.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -63,6 +65,8 @@
 		11A555622D57808A00FA631A /* ItemCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemCell.swift; sourceTree = "<group>"; };
 		11A555642D5780A000FA631A /* ItemCellVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemCellVM.swift; sourceTree = "<group>"; };
 		11A555662D578F3A00FA631A /* UIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIView.swift; sourceTree = "<group>"; };
+		11A5556A2D57B6B900FA631A /* AllItemsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllItemsCoordinator.swift; sourceTree = "<group>"; };
+		11A5556C2D57B6C000FA631A /* FavoriteItemsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteItemsCoordinator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,6 +102,8 @@
 			children = (
 				11A5552C2D56510200FA631A /* AppCoordinator.swift */,
 				11A5552E2D5651DA00FA631A /* TabBarCoordinator.swift */,
+				11A5556A2D57B6B900FA631A /* AllItemsCoordinator.swift */,
+				11A5556C2D57B6C000FA631A /* FavoriteItemsCoordinator.swift */,
 			);
 			path = Coordinators;
 			sourceTree = "<group>";
@@ -293,6 +299,7 @@
 				11A5553B2D56671300FA631A /* DataService.swift in Sources */,
 				11A5552D2D56510800FA631A /* AppCoordinator.swift in Sources */,
 				11A555322D5654DE00FA631A /* SplashVC.swift in Sources */,
+				11A5556B2D57B6BA00FA631A /* AllItemsCoordinator.swift in Sources */,
 				11A555652D5780A200FA631A /* ItemCellVM.swift in Sources */,
 				11A555372D565B4700FA631A /* Typealiases.swift in Sources */,
 				11A5553E2D566AF500FA631A /* ItemsVC.swift in Sources */,
@@ -304,6 +311,7 @@
 				11A555572D56838600FA631A /* Collection.swift in Sources */,
 				11A5552F2D5651DC00FA631A /* TabBarCoordinator.swift in Sources */,
 				11A555602D56B66A00FA631A /* UITableViewCell.swift in Sources */,
+				11A5556D2D57B6C000FA631A /* FavoriteItemsCoordinator.swift in Sources */,
 				11A555402D566AFB00FA631A /* AllItemsVM.swift in Sources */,
 				11A555632D57808B00FA631A /* ItemCell.swift in Sources */,
 				11A555672D578F3C00FA631A /* UIView.swift in Sources */,

@@ -19,7 +19,10 @@ extension UITableView {
         }
         return result
     }
-    var isAllCellsSelected: Bool { indexPathsForSelectedRows?.count ?? 0 == indexPaths.count }
+    var isAllCellsSelected: Bool {
+        guard let indexPathsForSelectedRows, !indexPathsForSelectedRows.isEmpty else { return false }
+        return indexPathsForSelectedRows.count == indexPaths.count
+    }
     
     func registerCell<T: UITableViewCell>(with type: T.Type) {
         register(T.self, forCellReuseIdentifier: T.reuseIdentifier)

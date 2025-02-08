@@ -71,7 +71,7 @@ final class AllItemsVM: ItemsVMProtocol {
     func getLeadingSwipeActions(for indexPath: IndexPath) -> [SwipeActionVM]? {
         guard let item = items[safe: indexPath.row] else { return nil }
         let isFavorite = item.isFavorite
-        let title = isFavorite ? "Remove from favorite" : "Mark as favorite"
+        let title = isFavorite ? "Remove from favorites" : "Mark as favorite"
         let actionVM = SwipeActionVM(title: title) { [weak self] completion in
             Task {
                 await self?.markItems(at: [indexPath], asFavorite: !isFavorite)
