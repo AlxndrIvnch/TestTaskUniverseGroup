@@ -9,11 +9,11 @@ import Foundation
 
 final class DependencyContainer {
     
-    let dataService: DataServiceProtocol
-    let itemsRepository: ItemsRepositoryProtocol
+    let itemsLoader: ItemsLoaderProtocol
+    let itemsStore: ItemsStoreProtocol
 
-    init(dataService: DataServiceProtocol, itemsRepository: ItemsRepositoryProtocol) {
-        self.dataService = dataService
-        self.itemsRepository = itemsRepository
+    init(itemsLoader: ItemsLoaderProtocol, itemsStore: ItemsStoreProtocol) {
+        self.itemsLoader = itemsLoader
+        self.itemsStore = itemsStore
     }
 }

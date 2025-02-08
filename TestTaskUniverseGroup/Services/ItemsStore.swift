@@ -1,5 +1,5 @@
 //
-//  ItemsRepository.swift
+//  ItemsStore.swift
 //  TestTaskUniverseGroup
 //
 //  Created by Oleksandr Ivanchenko on 2/7/25.
@@ -7,14 +7,14 @@
 
 import Foundation
 
-protocol ItemsRepositoryProtocol: Actor {
+protocol ItemsStoreProtocol: Actor {
     var items: [Item] { get }
     var updates: AsyncStream<[Item]> { get }
     func setItems(_ items: [Item])
     func markItems(with ids: [Int], asFavorite: Bool)
 }
 
-actor ItemsRepository: ItemsRepositoryProtocol {
+actor ItemsStore: ItemsStoreProtocol {
     
     private(set) var items = [Item]() {
         didSet { continuations.forEach { $0.value.yield(items) } }

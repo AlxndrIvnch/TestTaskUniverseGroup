@@ -11,28 +11,28 @@ final class SplashVM {
     var onProgress: SimpleClosure<Float>?
     var onError: SimpleClosure<String>?
     
-    private let dataService: DataServiceProtocol
-    private let itemsRepository: ItemsRepositoryProtocol
-    private let onLoadedData: EmptyClosure
+    private let itemsLoader: ItemsLoaderProtocol
+    private let itemsStore: ItemsStoreProtocol
+    private let onLoadedItems: EmptyClosure
     
-    init(dataService: DataServiceProtocol,
-         itemsRepository: ItemsRepositoryProtocol,
-         onLoadedData: @escaping EmptyClosure) {
-        self.dataService = dataService
-        self.itemsRepository = itemsRepository
-        self.onLoadedData = onLoadedData
+    init(itemsLoader: ItemsLoaderProtocol,
+         itemsStore: ItemsStoreProtocol,
+         onLoadedItems: @escaping EmptyClosure) {
+        self.itemsLoader = itemsLoader
+        self.itemsStore = itemsStore
+        self.onLoadedItems = onLoadedItems
     }
     
     func viewDidLoad() {
         Task {
             do {
-                let items = try await dataService.loadData(progressHandler: { [weak self] progress in
+                let items = try await itemsLoader.loadItems(progressHandler: { [weak self] progress in
                     Task { @MainActor in
                         self?.onProgress?(Float(progress))
                     }
                 })
-                await itemsRepository.setItems(items)
-                onLoadedData()
+                await itemsStore.setItems(items)
+                onLoadedItems()
             } catch {
                 onError?(String(localized: "loading_error"))
             }

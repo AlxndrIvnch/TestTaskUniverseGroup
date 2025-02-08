@@ -24,11 +24,11 @@ final class AppCoordinator {
     }
     
     func start() {
-        showSplashScreen(onLoadedData: showMainFlow)
+        showSplashScreen(onLoadedItems: showMainFlow)
     }
 
-    private func showSplashScreen(onLoadedData: @escaping EmptyClosure) {
-        let splashVC = moduleFactory.makeSplashVC(onLoadedData: onLoadedData)
+    private func showSplashScreen(onLoadedItems: @escaping EmptyClosure) {
+        let splashVC = moduleFactory.makeSplashVC(onLoadedItems: onLoadedItems)
         window.rootViewController = splashVC
         window.makeKeyAndVisible()
     }

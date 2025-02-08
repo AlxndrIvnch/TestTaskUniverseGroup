@@ -18,16 +18,16 @@ final class AllItemsVM: ItemsVMProtocol {
     var showMarkFavoriteButton: Bool { true }
     var textWhenEmpty: String { String(localized: "no_items") }
     
-    private let itemsRepository: ItemsRepositoryProtocol
+    private let itemsStore: ItemsStoreProtocol
     
     private var items = [Item]()
-    private var repositoryFetchTask: Task<Void, Never>?
+    private var storeFetchTask: Task<Void, Never>?
     private var lastSnapshot: NSDiffableDataSourceSnapshot<Int, ItemCell.ViewModel>?
     
-    init(itemsRepository: ItemsRepositoryProtocol) {
-        self.itemsRepository = itemsRepository
-        repositoryFetchTask = Task {
-            for await items in await itemsRepository.updates {
+    init(itemsStore: ItemsStoreProtocol) {
+        self.itemsStore = itemsStore
+        storeFetchTask = Task {
+            for await items in await itemsStore.updates {
                 self.items = items
                 onUpdateUI?()
             }
@@ -35,7 +35,7 @@ final class AllItemsVM: ItemsVMProtocol {
     }
     
     deinit {
-        repositoryFetchTask?.cancel()
+        storeFetchTask?.cancel()
     }
     
     func createSnapshot() -> NSDiffableDataSourceSnapshot<Int, ItemCell.ViewModel> {
@@ -59,7 +59,7 @@ final class AllItemsVM: ItemsVMProtocol {
     func markItems(at indexPaths: [IndexPath], asFavorite: Bool) async {
         onLoading?(true)
         let ids = indexPaths.compactMap { items[safe: $0.row]?.id }
-        await itemsRepository.markItems(with: ids, asFavorite: asFavorite)
+        await itemsStore.markItems(with: ids, asFavorite: asFavorite)
         onLoading?(false)
     }
     

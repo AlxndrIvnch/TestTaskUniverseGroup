@@ -1,5 +1,5 @@
 //
-//  DataService.swift
+//  ItemsLoader.swift
 //  TestTaskUniverseGroup
 //
 //  Created by Oleksandr Ivanchenko on 2/7/25.
@@ -7,19 +7,19 @@
 
 import Foundation
 
-protocol DataServiceProtocol: Actor {
-    func loadData(progressHandler: (@Sendable (Double) -> Void)?) async throws -> [Item]
+protocol ItemsLoaderProtocol: Actor {
+    func loadItems(progressHandler: (@Sendable (Double) -> Void)?) async throws -> [Item]
 }
 
-extension DataServiceProtocol {
-    func loadData() async throws -> [Item] {
-        return try await loadData(progressHandler: nil)
+extension ItemsLoaderProtocol {
+    func loadItems() async throws -> [Item] {
+        return try await loadItems(progressHandler: nil)
     }
 }
 
-actor DataService: DataServiceProtocol {
+actor ItemsLoader: ItemsLoaderProtocol {
     
-    func loadData(progressHandler: (@Sendable (Double) -> Void)? = nil) async throws -> [Item] {
+    func loadItems(progressHandler: (@Sendable (Double) -> Void)? = nil) async throws -> [Item] {
         let duration = 2.0
         let steps = 20
         let sleepInterval = duration / Double(steps)

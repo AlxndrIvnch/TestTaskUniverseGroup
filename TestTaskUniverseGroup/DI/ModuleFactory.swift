@@ -9,7 +9,7 @@ import UIKit
 
 @MainActor
 protocol ModuleFactoryProtocol {
-    func makeSplashVC(onLoadedData: @escaping EmptyClosure) -> UIViewController
+    func makeSplashVC(onLoadedItems: @escaping EmptyClosure) -> UIViewController
     func makeAllItemsVC() -> UIViewController
     func makeFavoriteItemsVC() -> UIViewController
 }
@@ -22,20 +22,20 @@ final class ModuleFactory: ModuleFactoryProtocol {
         self.container = container
     }
     
-    func makeSplashVC(onLoadedData: @escaping EmptyClosure) -> UIViewController {
-        let splashVM = SplashVM(dataService: container.dataService,
-                                itemsRepository: container.itemsRepository,
-                                onLoadedData: onLoadedData )
+    func makeSplashVC(onLoadedItems: @escaping EmptyClosure) -> UIViewController {
+        let splashVM = SplashVM(itemsLoader: container.itemsLoader,
+                                itemsStore: container.itemsStore,
+                                onLoadedItems: onLoadedItems )
         return SplashVC(viewModel: splashVM)
     }
     
     func makeAllItemsVC() -> UIViewController {
-        let allItemsVM = AllItemsVM(itemsRepository: container.itemsRepository)
+        let allItemsVM = AllItemsVM(itemsStore: container.itemsStore)
         return ItemsVC(viewModel: allItemsVM)
     }
     
     func makeFavoriteItemsVC() -> UIViewController {
-        let favoriteItemsVM = FavoriteItemsVM(itemsRepository: container.itemsRepository)
+        let favoriteItemsVM = FavoriteItemsVM(itemsStore: container.itemsStore)
         return ItemsVC(viewModel: favoriteItemsVM)
     }
 }
