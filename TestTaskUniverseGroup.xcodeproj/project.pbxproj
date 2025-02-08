@@ -29,6 +29,7 @@
 		11A555592D5683F300FA631A /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A555582D5683F100FA631A /* Item.swift */; };
 		11A5555B2D56897600FA631A /* ItemsRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A5555A2D56897500FA631A /* ItemsRepository.swift */; };
 		11A5555D2D569B6D00FA631A /* SwipeActionVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A5555C2D569B6D00FA631A /* SwipeActionVM.swift */; };
+		11A555602D56B66A00FA631A /* UITableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A5555F2D56B66800FA631A /* UITableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -55,6 +56,7 @@
 		11A555582D5683F100FA631A /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
 		11A5555A2D56897500FA631A /* ItemsRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemsRepository.swift; sourceTree = "<group>"; };
 		11A5555C2D569B6D00FA631A /* SwipeActionVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeActionVM.swift; sourceTree = "<group>"; };
+		11A5555F2D56B66800FA631A /* UITableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,6 +99,7 @@
 		11A555142D563A6100FA631A /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				11A5555F2D56B66800FA631A /* UITableViewCell.swift */,
 				11A555562D56838500FA631A /* Collection.swift */,
 				11A555522D567A1B00FA631A /* Optional.swift */,
 				11A5554A2D5673A000FA631A /* UITableView.swift */,
@@ -282,6 +285,7 @@
 				11A555262D563A6100FA631A /* SceneDelegate.swift in Sources */,
 				11A555572D56838600FA631A /* Collection.swift in Sources */,
 				11A5552F2D5651DC00FA631A /* TabBarCoordinator.swift in Sources */,
+				11A555602D56B66A00FA631A /* UITableViewCell.swift in Sources */,
 				11A555402D566AFB00FA631A /* AllItemsVM.swift in Sources */,
 				11A555472D566B7300FA631A /* FavoriteItemsVM.swift in Sources */,
 				11A555282D563A6100FA631A /* AppDelegate.swift in Sources */,

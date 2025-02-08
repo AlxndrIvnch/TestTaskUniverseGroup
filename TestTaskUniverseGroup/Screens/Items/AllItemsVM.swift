@@ -18,16 +18,21 @@ final class AllItemsVM: ItemsVMProtocol {
     
     private let itemsRepository: ItemsRepositoryProtocol
     
-    private var items: [Item] = []
+    private var items = [Item]()
+    private var repositoryFetchTask: Task<Void, Never>?
     
     init(itemsRepository: ItemsRepositoryProtocol) {
         self.itemsRepository = itemsRepository
-        Task {
+        repositoryFetchTask = Task {
             for await items in await itemsRepository.updates {
                 self.items = items
                 onUpdateUI?()
             }
         }
+    }
+    
+    deinit {
+        repositoryFetchTask?.cancel()
     }
     
     func getNumberOfRows() -> Int {

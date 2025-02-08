@@ -18,16 +18,21 @@ final class FavoriteItemsVM: ItemsVMProtocol {
     
     private let itemsRepository: ItemsRepositoryProtocol
     
-    private var favoriteItems: [Item] = []
+    private var favoriteItems = [Item]()
+    private var repositoryFetchTask: Task<Void, Never>?
     
     init(itemsRepository: ItemsRepositoryProtocol) {
         self.itemsRepository = itemsRepository
-        Task {
+        repositoryFetchTask = Task {
             for await items in await itemsRepository.updates {
                 favoriteItems = items.filter(\.isFavorite)
                 onUpdateUI?()
             }
         }
+    }
+    
+    deinit {
+        repositoryFetchTask?.cancel()
     }
     
     func getNumberOfRows() -> Int {

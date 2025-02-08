@@ -85,7 +85,7 @@ final class ItemsVC: BaseVC {
         tableView.allowsMultipleSelectionDuringEditing = true
         tableView.keyboardDismissMode = .onDrag
         tableView.sectionHeaderTopPadding = 0
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellIdentifier)
+        tableView.registerCell(with: UITableViewCell.self)
         return tableView
     }()
     
@@ -97,8 +97,6 @@ final class ItemsVC: BaseVC {
     }()
     
     private let activityIndicator = UIActivityIndicatorView(style: .large)
-    
-    private let cellIdentifier = "UITableViewCell"
     
     private var isEditingRow = false
     
@@ -253,7 +251,7 @@ extension ItemsVC: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath)
+        let cell: UITableViewCell = tableView.dequeueCell(for: indexPath)
         cell.textLabel?.text = viewModel.getCellVM(for: indexPath)
         cell.backgroundColor = .clear
         return cell

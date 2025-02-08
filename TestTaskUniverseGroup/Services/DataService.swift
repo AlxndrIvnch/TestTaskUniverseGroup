@@ -19,8 +19,6 @@ actor DataService: DataServiceProtocol {
     
     func loadData() async throws -> [Item] {
         try await Task.sleep(for: .seconds(3))
-        let items = (1...50).map { Item(id: $0, title: "Item \($0)", isFavorite: false) }
-        await ItemsRepository.shared.updateItems(with: items)
-        return items
+        return (1...50).map { Item(id: $0, title: "Item \($0)", isFavorite: false) }
     }
 }
