@@ -201,7 +201,7 @@ final class ItemsVC: BaseVC {
     private func setupToolBar() {
         let appearance = UIToolbarAppearance()
         appearance.configureWithTransparentBackground()
-        appearance.backgroundEffect = .init(style: .prominent)
+        appearance.backgroundEffect = .init(style: .systemUltraThinMaterial)
         navigationController?.toolbar.standardAppearance = appearance
         navigationController?.toolbar.compactAppearance = appearance
         navigationController?.toolbar.scrollEdgeAppearance = appearance
@@ -249,8 +249,9 @@ final class ItemsVC: BaseVC {
     private func updateTableView() {
         guard tableView.isInViewHierarchy else { return }
         let snapshot = viewModel.createSnapshot()
-        dataSource.apply(snapshot, animatingDifferences: true)
-        updateEmptyView()
+        dataSource.apply(snapshot, animatingDifferences: true, completion: { [weak self] in
+            self?.updateEmptyView()
+        })
     }
     
     private func updateEmptyView() {
