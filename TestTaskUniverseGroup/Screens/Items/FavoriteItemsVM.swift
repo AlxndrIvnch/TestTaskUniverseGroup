@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit.NSDiffableDataSourceSectionSnapshot
 
 final class FavoriteItemsVM: ItemsVMProtocol {
     
@@ -35,38 +36,39 @@ final class FavoriteItemsVM: ItemsVMProtocol {
         repositoryFetchTask?.cancel()
     }
     
-    func getNumberOfRows() -> Int {
-        return favoriteItems.count
+    func createSnapshot() -> NSDiffableDataSourceSnapshot<Int, ItemCell.ViewModel> {
+        var snapshot = NSDiffableDataSourceSnapshot<Int, ItemCell.ViewModel>()
+        snapshot.appendSections([0])
+        snapshot.appendItems(favoriteItems.map(ItemCell.ViewModel.init))
+        return snapshot
     }
     
-    func getCellVM(for indexPath: IndexPath) -> String? {
-        return favoriteItems[safe: indexPath.row]?.title
-    }
-    
-    func markItems(asFavorite: Bool, at indexPaths: [IndexPath]) async {
+    func markItems(at indexPaths: [IndexPath], asFavorite: Bool) async {
         onLoading?(true)
-        for indexPath in indexPaths {
-            guard let item = favoriteItems[safe: indexPath.row] else { continue }
-            await itemsRepository.toggleIsFavorite(for: item.id)
-        }
+        let ids = indexPaths.compactMap { favoriteItems[safe: $0.row]?.id }
+        await itemsRepository.markItems(with: ids, asFavorite: asFavorite)
         onLoading?(false)
+    }
+    
+    func toggleItemIsFavorite(at indexPath: IndexPath) async {
+        await markItems(at: [indexPath], asFavorite: false)
     }
     
     func getLeadingSwipeActions(for indexPath: IndexPath) -> [SwipeActionVM]? {
         let actionVM = SwipeActionVM(title: "Remove from favorite") { [weak self] completion in
             Task {
-                await self?.markItems(asFavorite: false, at: [indexPath])
+                await self?.markItems(at: [indexPath], asFavorite: false)
                 completion(true)
             }
         }
         return [actionVM]
     }
     
-    func canMarkFavorite(for indexPaths: [IndexPath]) -> Bool {
+    func canMarkFavorite(at indexPaths: [IndexPath]) -> Bool {
         return false
     }
     
-    func canRemoveFromFavorite(for indexPaths: [IndexPath]) -> Bool {
-        return true
+    func canRemoveFromFavorite(at indexPaths: [IndexPath]) -> Bool {
+        return !indexPaths.isEmpty
     }
 }

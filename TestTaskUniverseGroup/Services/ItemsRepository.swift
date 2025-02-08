@@ -10,8 +10,8 @@ import Foundation
 protocol ItemsRepositoryProtocol: Actor {
     var items: [Item] { get }
     var updates: AsyncStream<[Item]> { get }
-    func save(_ items: [Item])
-    func toggleIsFavorite(for itemID: Int)
+    func setItems(_ items: [Item])
+    func markItems(with ids: [Int], asFavorite: Bool)
 }
 
 actor ItemsRepository: ItemsRepositoryProtocol {
@@ -39,13 +39,17 @@ actor ItemsRepository: ItemsRepositoryProtocol {
     
     private init() {}
     
-    func save(_ items: [Item]) {
+    func setItems(_ items: [Item]) {
         self.items = items
     }
     
-    func toggleIsFavorite(for itemID: Int) {
-        guard let index = items.firstIndex(where: { $0.id == itemID }) else { return }
-        items[index].isFavorite.toggle()
+    func markItems(with ids: [Int], asFavorite: Bool) {
+        var copy = items
+        for id in ids {
+            guard let index = copy.firstIndex(where: { $0.id == id }) else { continue }
+            copy[safe: index]?.isFavorite = asFavorite
+        }
+        items = copy
     }
     
     private func removeContinuation(with id: UUID) {

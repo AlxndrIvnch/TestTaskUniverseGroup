@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit.NSDiffableDataSourceSectionSnapshot
 
 final class AllItemsVM: ItemsVMProtocol {
     
@@ -20,6 +21,7 @@ final class AllItemsVM: ItemsVMProtocol {
     
     private var items = [Item]()
     private var repositoryFetchTask: Task<Void, Never>?
+    private var lastSnapshot: NSDiffableDataSourceSnapshot<Int, ItemCell.ViewModel>?
     
     init(itemsRepository: ItemsRepositoryProtocol) {
         self.itemsRepository = itemsRepository
@@ -35,21 +37,34 @@ final class AllItemsVM: ItemsVMProtocol {
         repositoryFetchTask?.cancel()
     }
     
-    func getNumberOfRows() -> Int {
-        return items.count
-    }
-    
-    func getCellVM(for indexPath: IndexPath) -> String? {
-        return items[safe: indexPath.row]?.title
-    }
-    
-    func markItems(asFavorite: Bool, at indexPaths: [IndexPath]) async {
-        onLoading?(true)
-        for indexPath in indexPaths {
-            guard let item = items[safe: indexPath.row] else { continue }
-            await itemsRepository.toggleIsFavorite(for: item.id)
+    func createSnapshot() -> NSDiffableDataSourceSnapshot<Int, ItemCell.ViewModel> {
+        var snapshot = NSDiffableDataSourceSnapshot<Int, ItemCell.ViewModel>()
+        snapshot.appendSections([0])
+        
+        let currentVMs = items.map(ItemCell.ViewModel.init)
+        snapshot.appendItems(currentVMs)
+        
+        let updatedVMs = currentVMs.filter { viewModel in
+            let viewModelInPrevious = lastSnapshot?.itemIdentifiers.first { $0 == viewModel }
+            guard let viewModelInPrevious else { return false }
+            return viewModelInPrevious.isFavorite != viewModel.isFavorite
         }
+        snapshot.reconfigureItems(updatedVMs)
+    
+        lastSnapshot = snapshot
+        return snapshot
+    }
+    
+    func markItems(at indexPaths: [IndexPath], asFavorite: Bool) async {
+        onLoading?(true)
+        let ids = indexPaths.compactMap { items[safe: $0.row]?.id }
+        await itemsRepository.markItems(with: ids, asFavorite: asFavorite)
         onLoading?(false)
+    }
+    
+    func toggleItemIsFavorite(at indexPath: IndexPath) async {
+        guard let item = items[safe: indexPath.row] else { return }
+        await markItems(at: [indexPath], asFavorite: !item.isFavorite)
     }
     
     func getLeadingSwipeActions(for indexPath: IndexPath) -> [SwipeActionVM]? {
@@ -58,20 +73,20 @@ final class AllItemsVM: ItemsVMProtocol {
         let title = isFavorite ? "Remove from favorite" : "Mark as favorite"
         let actionVM = SwipeActionVM(title: title) { [weak self] completion in
             Task {
-                await self?.markItems(asFavorite: !isFavorite, at: [indexPath])
+                await self?.markItems(at: [indexPath], asFavorite: !isFavorite)
                 completion(true)
             }
         }
         return [actionVM]
     }
     
-    func canMarkFavorite(for indexPaths: [IndexPath]) -> Bool {
+    func canMarkFavorite(at indexPaths: [IndexPath]) -> Bool {
         return indexPaths.contains {
             items[safe: $0.row]?.isFavorite == false
         }
     }
     
-    func canRemoveFromFavorite(for indexPaths: [IndexPath]) -> Bool {
+    func canRemoveFromFavorite(at indexPaths: [IndexPath]) -> Bool {
         return indexPaths.contains {
             items[safe: $0.row]?.isFavorite == true
         }

@@ -74,20 +74,65 @@ final class ItemsVC: BaseVC {
         return button
     }()
     
+    private lazy var selectAllButton: UIBarButtonItem = {
+        let button = UIBarButtonItem()
+        button.title = "Select All"
+        button.style = .plain
+        button.addAction { [weak self] in
+            guard let self else { return }
+            tableView.selectAll(animated: false)
+            updateNavigationBarButtons()
+            updateToolbarButtons()
+        }
+        button.setTitleTextAttributes([.foregroundColor: UIColor.systemBlue,
+                                       .font: UIFont.systemFont(ofSize: 16)],
+                                      for: .normal)
+        return button
+    }()
+    
+    private lazy var deselectAllButton: UIBarButtonItem = {
+        let button = UIBarButtonItem()
+        button.title = "Deselect All"
+        button.style = .plain
+        button.addAction { [weak self] in
+            guard let self else { return }
+            tableView.deselectAll(animated: false)
+            updateNavigationBarButtons()
+            updateToolbarButtons()
+        }
+        button.setTitleTextAttributes([.foregroundColor: UIColor.systemBlue,
+                                       .font: UIFont.systemFont(ofSize: 16)],
+                                      for: .normal)
+        return button
+    }()
+    
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
-        tableView.dataSource = self
         tableView.delegate = self
-        tableView.estimatedRowHeight = 70
+        tableView.estimatedRowHeight = 44
         tableView.backgroundColor = .clear
         tableView.separatorStyle = .none
         tableView.automaticallyAdjustsScrollIndicatorInsets = false
         tableView.allowsMultipleSelectionDuringEditing = true
         tableView.keyboardDismissMode = .onDrag
         tableView.sectionHeaderTopPadding = 0
-        tableView.registerCell(with: UITableViewCell.self)
+        tableView.registerCell(with: ItemCell.self)
         return tableView
     }()
+    
+    private lazy var dataSource = {
+        let dataSource = UITableViewDiffableDataSource<Int, ItemCell.ViewModel>(tableView: tableView) { tableView, indexPath, cellVM in
+            let cell: ItemCell = tableView.dequeueCell(for: indexPath)
+            cell.viewModel = cellVM
+            return cell
+        }
+        return dataSource
+    }()
+    
+    private func updateTableView() {
+        let snapshot = viewModel.createSnapshot()
+        dataSource.apply(snapshot, animatingDifferences: true)
+    }
     
     private let emptyView: UIView = {
         let view = UIView() //TODO: Create
@@ -112,6 +157,8 @@ final class ItemsVC: BaseVC {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupToolBar()
+        updateTableView()
+        updateEmptyView()
     }
     
     override func setupView() {
@@ -191,7 +238,7 @@ final class ItemsVC: BaseVC {
     override func setupBindings() {
         viewModel.onUpdateUI = { [weak self] in
             guard let self else { return }
-            tableView.reloadData()
+            updateTableView()
             updateEmptyView()
             updateToolbarButtons()
         }
@@ -211,9 +258,15 @@ final class ItemsVC: BaseVC {
 //        emptyView.text = viewModel.emptyText
     }
     
-    private func updateNavigationBarButtons(_ animated: Bool) {
-        let button = isEditing ? doneButton : selectButton
-        navigationItem.setRightBarButton(button, animated: animated)
+    private func updateNavigationBarButtons(_ animated: Bool = true) {
+        let rightBarButton = isEditing ? doneButton : selectButton
+        navigationItem.setRightBarButton(rightBarButton, animated: animated)
+        if isEditing {
+            let leftBarButton = tableView.isAllCellsSelected ? deselectAllButton : selectAllButton
+            navigationItem.setLeftBarButton(leftBarButton, animated: animated)
+        } else {
+            navigationItem.setLeftBarButton(nil, animated: animated)
+        }
     }
     
     private func updateToolbarButtons(_ animated: Bool = true) {
@@ -226,8 +279,8 @@ final class ItemsVC: BaseVC {
         }
         
         let indexPaths = tableView.indexPathsForSelectedRows ?? []
-        removeFromFavoriteButton.isEnabled = viewModel.canRemoveFromFavorite(for: indexPaths)
-        markFavoriteButton.isEnabled = viewModel.canMarkFavorite(for: indexPaths)
+        removeFromFavoriteButton.isEnabled = viewModel.canRemoveFromFavorite(at: indexPaths)
+        markFavoriteButton.isEnabled = viewModel.canMarkFavorite(at: indexPaths)
         
         let toolbarItems = buttons.reduce([UIBarButtonItem.flexibleSpace()]) {
             return $0 + [$1, .flexibleSpace()]
@@ -238,42 +291,28 @@ final class ItemsVC: BaseVC {
     private func mark(asFavorite: Bool) {
         guard let indexPaths = tableView.indexPathsForSelectedRows else { return }
         Task {
-            await viewModel.markItems(asFavorite: asFavorite, at: indexPaths)
+            await viewModel.markItems(at: indexPaths, asFavorite: asFavorite)
             setEditing(false, animated: true)
         }
     }
 }
 
-extension ItemsVC: UITableViewDataSource {
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.getNumberOfRows()
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell: UITableViewCell = tableView.dequeueCell(for: indexPath)
-        cell.textLabel?.text = viewModel.getCellVM(for: indexPath)
-        cell.backgroundColor = .clear
-        return cell
-    }
-}
-
 extension ItemsVC: UITableViewDelegate {
-    
-//    func tableView(_ tableView: UITableView, didHighlightRowAt indexPath: IndexPath) {
-//        tableView.cellForRow(at: indexPath)?.setHighlighted(false, animated: false)
-//    }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if tableView.isEditing {
+            updateNavigationBarButtons()
             updateToolbarButtons()
         } else {
-            tableView.deselectRow(at: indexPath, animated: true)
+            Task {
+                await viewModel.toggleItemIsFavorite(at: indexPath)
+            }
         }
     }
     
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
         if tableView.isEditing {
+            updateNavigationBarButtons()
             updateToolbarButtons()
         }
     }

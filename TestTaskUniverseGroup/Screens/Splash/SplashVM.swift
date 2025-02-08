@@ -22,11 +22,11 @@ struct SplashVM {
         self.onLoadedData = onLoadedData
     }
     
-    func loadData() {
+    func viewDidLoad() {
         Task {
             do {
                 let items = try await dataService.loadData()
-                await itemsRepository.save(items)
+                await itemsRepository.setItems(items)
                 onLoadedData()
             } catch {
                 onError?("Data loading failed. Please try again later.")
