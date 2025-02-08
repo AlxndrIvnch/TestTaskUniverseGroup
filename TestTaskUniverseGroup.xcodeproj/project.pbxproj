@@ -35,6 +35,7 @@
 		11A555672D578F3C00FA631A /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A555662D578F3A00FA631A /* UIView.swift */; };
 		11A5556B2D57B6BA00FA631A /* AllItemsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A5556A2D57B6B900FA631A /* AllItemsCoordinator.swift */; };
 		11A5556D2D57B6C000FA631A /* FavoriteItemsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A5556C2D57B6C000FA631A /* FavoriteItemsCoordinator.swift */; };
+		11A5556F2D57DB2200FA631A /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 11A5556E2D57DB2200FA631A /* Localizable.xcstrings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -67,6 +68,7 @@
 		11A555662D578F3A00FA631A /* UIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIView.swift; sourceTree = "<group>"; };
 		11A5556A2D57B6B900FA631A /* AllItemsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllItemsCoordinator.swift; sourceTree = "<group>"; };
 		11A5556C2D57B6C000FA631A /* FavoriteItemsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteItemsCoordinator.swift; sourceTree = "<group>"; };
+		11A5556E2D57DB2200FA631A /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -166,6 +168,7 @@
 			isa = PBXGroup;
 			children = (
 				11A5551B2D563A6100FA631A /* Assets.xcassets */,
+				11A5556E2D57DB2200FA631A /* Localizable.xcstrings */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -285,6 +288,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				11A5556F2D57DB2200FA631A /* Localizable.xcstrings in Resources */,
 				11A555222D563A6100FA631A /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -441,6 +445,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 6.0;
 			};
@@ -498,6 +503,7 @@
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 6.0;
 				VALIDATE_PRODUCT = YES;
 			};

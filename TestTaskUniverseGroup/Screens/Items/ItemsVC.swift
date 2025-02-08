@@ -14,7 +14,7 @@ final class ItemsVC: BaseVC {
     
     private lazy var markFavoriteButton: UIBarButtonItem = {
         let button = UIBarButtonItem()
-        button.title = "Mark as Favorite" //TODO: Localize
+        button.title = String(localized: "add_item_to_favorites")
         button.style = .done
         button.addAction { [weak self] in
             self?.mark(asFavorite: true)
@@ -31,7 +31,7 @@ final class ItemsVC: BaseVC {
     
     private lazy var removeFromFavoriteButton: UIBarButtonItem = {
         let button = UIBarButtonItem()
-        button.title = "Remove from Favorites"
+        button.title = String(localized: "remove_item_from_favorites")
         button.style = .done
         button.addAction { [weak self] in
             self?.mark(asFavorite: false)
@@ -48,7 +48,7 @@ final class ItemsVC: BaseVC {
     
     private lazy var selectButton: UIBarButtonItem = {
         let button = UIBarButtonItem()
-        button.title = "Select"
+        button.title = String(localized: "start_selection")
         button.style = .plain
         button.addAction { [weak self] in
             guard let self else { return }
@@ -62,7 +62,7 @@ final class ItemsVC: BaseVC {
     
     private lazy var doneButton: UIBarButtonItem = {
         let button = UIBarButtonItem()
-        button.title = "Done"
+        button.title = String(localized: "stop_selection")
         button.style = .done
         button.addAction { [weak self] in
             guard let self else { return }
@@ -76,7 +76,7 @@ final class ItemsVC: BaseVC {
     
     private lazy var selectAllButton: UIBarButtonItem = {
         let button = UIBarButtonItem()
-        button.title = "Select All"
+        button.title = String(localized: "select_all_items_action_text")
         button.style = .plain
         button.addAction { [weak self] in
             guard let self else { return }
@@ -92,7 +92,7 @@ final class ItemsVC: BaseVC {
     
     private lazy var deselectAllButton: UIBarButtonItem = {
         let button = UIBarButtonItem()
-        button.title = "Deselect All"
+        button.title = String(localized: "deselect_all_items")
         button.style = .plain
         button.addAction { [weak self] in
             guard let self else { return }

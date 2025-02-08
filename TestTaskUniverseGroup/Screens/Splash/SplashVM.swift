@@ -34,7 +34,7 @@ final class SplashVM {
                 await itemsRepository.setItems(items)
                 onLoadedData()
             } catch {
-                onError?("Data loading failed. Please try again later.")
+                onError?(String(localized: "loading_error"))
             }
         }
     }

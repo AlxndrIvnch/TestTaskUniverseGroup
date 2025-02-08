@@ -20,14 +20,14 @@ final class TabBarCoordinator {
         let tabBarController = UITabBarController()
         
         let allItemsNC = UINavigationController()
-        allItemsNC.tabBarItem = UITabBarItem(title: "All",
+        allItemsNC.tabBarItem = UITabBarItem(title: String(localized: "all_items_tab_name"),
                                              image: UIImage(systemName: "list.bullet"),
                                              tag: 0)
         let allItemsCoordinator = AllItemsCoordinator(navigationController: allItemsNC)
         allItemsCoordinator.start()
         
         let favoriteItemsNC = UINavigationController()
-        favoriteItemsNC.tabBarItem = UITabBarItem(title: "Favorites",
+        favoriteItemsNC.tabBarItem = UITabBarItem(title: String(localized: "favorite_items_tab_name"),
                                                   image: UIImage(systemName: "star.fill"),
                                                   tag: 1)
         let favoriteItemsCoordinator = FavoriteItemsCoordinator(navigationController: favoriteItemsNC)

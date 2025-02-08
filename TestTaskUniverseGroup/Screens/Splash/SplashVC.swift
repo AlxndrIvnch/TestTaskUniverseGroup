@@ -21,7 +21,7 @@ final class SplashVC: BaseVC {
     
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Splash Screen"
+        label.text = String(localized: "splash_screen_title")
         if #available(iOS 17.0, *) {
             label.font = UIFont.preferredFont(forTextStyle: .extraLargeTitle)
         } else {

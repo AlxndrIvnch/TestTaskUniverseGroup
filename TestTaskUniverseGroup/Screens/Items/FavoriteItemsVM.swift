@@ -13,10 +13,10 @@ final class FavoriteItemsVM: ItemsVMProtocol {
     var onUpdateUI: EmptyClosure?
     var onLoading: SimpleClosure<Bool>?
     
-    var title: String { "Favorite Items" }
+    var title: String { String(localized: "favorite_items_screen_title") }
     var showMarkFavoriteButton: Bool { false }
     var showRemoveFromFavoriteButton: Bool { true }
-    var textWhenEmpty: String { "No favorites yet. Tap an item to mark it as a favorite." }
+    var textWhenEmpty: String { String(localized: "favorites_empty") }
     
     private let itemsRepository: ItemsRepositoryProtocol
     
@@ -56,7 +56,9 @@ final class FavoriteItemsVM: ItemsVMProtocol {
     }
     
     func getLeadingSwipeActions(for indexPath: IndexPath) -> [SwipeActionVM]? {
-        let actionVM = SwipeActionVM(title: "Remove from favorites") { [weak self] completion in
+        let actionVM = SwipeActionVM(
+            title: String(localized: "remove_item_from_favorites")
+        ) { [weak self] completion in
             Task {
                 await self?.markItems(at: [indexPath], asFavorite: false)
                 completion(true)

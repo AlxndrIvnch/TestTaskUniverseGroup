@@ -13,10 +13,10 @@ final class AllItemsVM: ItemsVMProtocol {
     var onUpdateUI: EmptyClosure?
     var onLoading: SimpleClosure<Bool>?
     
-    var title: String { "All Items" }
+    var title: String { String(localized: "all_items_screen_title") }
     var showRemoveFromFavoriteButton: Bool { true }
     var showMarkFavoriteButton: Bool { true }
-    var textWhenEmpty: String { "No Items Available." }
+    var textWhenEmpty: String { String(localized: "no_items") }
     
     private let itemsRepository: ItemsRepositoryProtocol
     
@@ -71,7 +71,7 @@ final class AllItemsVM: ItemsVMProtocol {
     func getLeadingSwipeActions(for indexPath: IndexPath) -> [SwipeActionVM]? {
         guard let item = items[safe: indexPath.row] else { return nil }
         let isFavorite = item.isFavorite
-        let title = isFavorite ? "Remove from favorites" : "Mark as favorite"
+        let title = isFavorite ? String(localized: "remove_item_from_favorites") : String(localized: "add_item_to_favorites")
         let actionVM = SwipeActionVM(title: title) { [weak self] completion in
             Task {
                 await self?.markItems(at: [indexPath], asFavorite: !isFavorite)
