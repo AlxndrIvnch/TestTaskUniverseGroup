@@ -116,19 +116,17 @@ final class ItemsVC: BaseVC {
         tableView.allowsMultipleSelectionDuringEditing = true
         tableView.keyboardDismissMode = .onDrag
         tableView.sectionHeaderTopPadding = 0
-        tableView.cellLayoutMarginsFollowReadableWidth = true
         tableView.registerCell(with: ItemCell.self)
         return tableView
     }()
     
-    private lazy var dataSource = {
-        let dataSource = UITableViewDiffableDataSource<Int, ItemCell.ViewModel>(tableView: tableView) { tableView, indexPath, cellVM in
+    private lazy var dataSource: UITableViewDiffableDataSource<Int, ItemCell.ViewModel> = {
+        return UITableViewDiffableDataSource(tableView: tableView) { [weak self] tableView, indexPath, cellVM in
             let cell: ItemCell = tableView.dequeueCell(for: indexPath)
             cell.viewModel = cellVM
-            cell.backgroundColor = .clear
+            cell.backgroundColor = self?.view.backgroundColor
             return cell
         }
-        return dataSource
     }()
     
     private lazy var emptyView: UILabel = {
@@ -225,7 +223,8 @@ final class ItemsVC: BaseVC {
         view.addSubview(tableView)
         tableView.snp.makeConstraints { make in
             make.top.centerX.equalTo(safeArea)
-            make.width.equalTo(view.readableContentGuide)
+            make.width.equalTo(safeArea).priority(.high)
+            make.width.lessThanOrEqualTo(800)
             make.bottom.equalToSuperview()
         }
         view.addSubview(emptyView)

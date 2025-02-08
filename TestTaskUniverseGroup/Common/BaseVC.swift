@@ -24,16 +24,16 @@ class BaseVC: UIViewController {
         setupBindings()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        setupNavigationBar(animated)
-    }
-
     func setupConstraints() {}
     
     func setupView() {}
     
     func setupBindings() {}
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setupNavigationBar(animated)
+    }
     
     func setupNavigationBar(_ animated: Bool) {}
 }
