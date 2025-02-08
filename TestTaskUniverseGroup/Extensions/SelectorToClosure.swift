@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 @objc fileprivate class ClosureHolder: NSObject {
     
     private let closure: EmptyClosure

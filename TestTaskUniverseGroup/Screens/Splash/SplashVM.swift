@@ -6,8 +6,9 @@
 //
 
 @MainActor
-struct SplashVM {
+final class SplashVM {
     
+    var onProgress: SimpleClosure<Float>?
     var onError: SimpleClosure<String>?
     
     private let dataService: DataServiceProtocol
@@ -25,7 +26,11 @@ struct SplashVM {
     func viewDidLoad() {
         Task {
             do {
-                let items = try await dataService.loadData()
+                let items = try await dataService.loadData(progressHandler: { [weak self] progress in
+                    Task { @MainActor in
+                        self?.onProgress?(Float(progress))
+                    }
+                })
                 await itemsRepository.setItems(items)
                 onLoadedData()
             } catch {
