@@ -36,6 +36,8 @@
 		11A5556B2D57B6BA00FA631A /* AllItemsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A5556A2D57B6B900FA631A /* AllItemsCoordinator.swift */; };
 		11A5556D2D57B6C000FA631A /* FavoriteItemsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A5556C2D57B6C000FA631A /* FavoriteItemsCoordinator.swift */; };
 		11A5556F2D57DB2200FA631A /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 11A5556E2D57DB2200FA631A /* Localizable.xcstrings */; };
+		11A555712D57EDEC00FA631A /* DependencyContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A555702D57EDE900FA631A /* DependencyContainer.swift */; };
+		11A555742D57EF8500FA631A /* ModuleFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A555732D57EF8400FA631A /* ModuleFactory.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -69,6 +71,8 @@
 		11A5556A2D57B6B900FA631A /* AllItemsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllItemsCoordinator.swift; sourceTree = "<group>"; };
 		11A5556C2D57B6C000FA631A /* FavoriteItemsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteItemsCoordinator.swift; sourceTree = "<group>"; };
 		11A5556E2D57DB2200FA631A /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		11A555702D57EDE900FA631A /* DependencyContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DependencyContainer.swift; sourceTree = "<group>"; };
+		11A555732D57EF8400FA631A /* ModuleFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModuleFactory.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -156,6 +160,7 @@
 				11A555132D563A6100FA631A /* Coordinators */,
 				11A555182D563A6100FA631A /* Screens */,
 				11A555152D563A6100FA631A /* Models */,
+				11A555722D57EF7B00FA631A /* DI */,
 				11A555192D563A6100FA631A /* Services */,
 				11A555142D563A6100FA631A /* Extensions */,
 				11A555352D565B1F00FA631A /* Common */,
@@ -221,6 +226,15 @@
 				11A555642D5780A000FA631A /* ItemCellVM.swift */,
 			);
 			path = ItemCell;
+			sourceTree = "<group>";
+		};
+		11A555722D57EF7B00FA631A /* DI */ = {
+			isa = PBXGroup;
+			children = (
+				11A555732D57EF8400FA631A /* ModuleFactory.swift */,
+				11A555702D57EDE900FA631A /* DependencyContainer.swift */,
+			);
+			path = DI;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -316,9 +330,11 @@
 				11A5552F2D5651DC00FA631A /* TabBarCoordinator.swift in Sources */,
 				11A555602D56B66A00FA631A /* UITableViewCell.swift in Sources */,
 				11A5556D2D57B6C000FA631A /* FavoriteItemsCoordinator.swift in Sources */,
+				11A555712D57EDEC00FA631A /* DependencyContainer.swift in Sources */,
 				11A555402D566AFB00FA631A /* AllItemsVM.swift in Sources */,
 				11A555632D57808B00FA631A /* ItemCell.swift in Sources */,
 				11A555672D578F3C00FA631A /* UIView.swift in Sources */,
+				11A555742D57EF8500FA631A /* ModuleFactory.swift in Sources */,
 				11A555472D566B7300FA631A /* FavoriteItemsVM.swift in Sources */,
 				11A555282D563A6100FA631A /* AppDelegate.swift in Sources */,
 				11A555592D5683F300FA631A /* Item.swift in Sources */,

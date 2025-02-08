@@ -16,8 +16,6 @@ protocol ItemsRepositoryProtocol: Actor {
 
 actor ItemsRepository: ItemsRepositoryProtocol {
     
-    static let shared = ItemsRepository()
-    
     private(set) var items = [Item]() {
         didSet { continuations.forEach { $0.value.yield(items) } }
     }
@@ -36,8 +34,6 @@ actor ItemsRepository: ItemsRepositoryProtocol {
     }
     
     private var continuations = [UUID: AsyncStream<[Item]>.Continuation]()
-    
-    private init() {}
     
     func setItems(_ items: [Item]) {
         self.items = items

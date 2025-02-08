@@ -10,15 +10,17 @@ import UIKit
 @MainActor
 final class AllItemsCoordinator {
     
+    private let moduleFactory: ModuleFactoryProtocol
+    
     private weak var navigationController: UINavigationController?
     
-    init(navigationController: UINavigationController) {
+    init(navigationController: UINavigationController, moduleFactory: ModuleFactoryProtocol) {
         self.navigationController = navigationController
+        self.moduleFactory = moduleFactory
     }
     
     func start() {
-        let allItemsVM = AllItemsVM(itemsRepository: ItemsRepository.shared)
-        let allItemsVC = ItemsVC(viewModel: allItemsVM)
+        let allItemsVC = moduleFactory.makeAllItemsVC()
         navigationController?.viewControllers = [allItemsVC]
     }
 }

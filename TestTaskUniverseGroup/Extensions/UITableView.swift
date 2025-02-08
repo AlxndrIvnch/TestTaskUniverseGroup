@@ -10,6 +10,7 @@ import UIKit
 extension UITableView {
     
     var isEmpty: Bool { (0..<numberOfSections).allSatisfy { numberOfRows(inSection: $0) == 0 } }
+    
     var indexPaths: [IndexPath] {
         var result = [IndexPath]()
         for section in 0..<numberOfSections {
@@ -19,6 +20,7 @@ extension UITableView {
         }
         return result
     }
+    
     var isAllCellsSelected: Bool {
         guard let indexPathsForSelectedRows, !indexPathsForSelectedRows.isEmpty else { return false }
         return indexPathsForSelectedRows.count == indexPaths.count

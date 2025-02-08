@@ -10,15 +10,17 @@ import UIKit
 @MainActor
 final class FavoriteItemsCoordinator {
     
+    private let moduleFactory: ModuleFactoryProtocol
+    
     private weak var navigationController: UINavigationController?
     
-    init(navigationController: UINavigationController) {
+    init(navigationController: UINavigationController, moduleFactory: ModuleFactoryProtocol) {
         self.navigationController = navigationController
+        self.moduleFactory = moduleFactory
     }
     
     func start() {
-        let favoriteItemsVM = FavoriteItemsVM(itemsRepository: ItemsRepository.shared)
-        let favoriteItemsVC = ItemsVC(viewModel: favoriteItemsVM)
+        let favoriteItemsVC = moduleFactory.makeFavoriteItemsVC()
         navigationController?.viewControllers = [favoriteItemsVC]
     }
 }

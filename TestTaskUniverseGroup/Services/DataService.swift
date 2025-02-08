@@ -19,10 +19,6 @@ extension DataServiceProtocol {
 
 actor DataService: DataServiceProtocol {
     
-    static let shared = DataService()
-    
-    private init() {}
-    
     func loadData(progressHandler: (@Sendable (Double) -> Void)? = nil) async throws -> [Item] {
         let duration = 2.0
         let steps = 20

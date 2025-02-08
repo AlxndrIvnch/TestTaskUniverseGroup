@@ -10,10 +10,13 @@ import UIKit
 @MainActor
 final class TabBarCoordinator {
     
+    private let moduleFactory: ModuleFactoryProtocol
+    
     private weak var window: UIWindow?
     
-    init(window: UIWindow) {
+    init(window: UIWindow, moduleFactory: ModuleFactoryProtocol) {
         self.window = window
+        self.moduleFactory = moduleFactory
     }
     
     func start() {
@@ -23,14 +26,16 @@ final class TabBarCoordinator {
         allItemsNC.tabBarItem = UITabBarItem(title: String(localized: "all_items_tab_name"),
                                              image: UIImage(systemName: "list.bullet"),
                                              tag: 0)
-        let allItemsCoordinator = AllItemsCoordinator(navigationController: allItemsNC)
+        let allItemsCoordinator = AllItemsCoordinator(navigationController: allItemsNC,
+                                                      moduleFactory: moduleFactory)
         allItemsCoordinator.start()
         
         let favoriteItemsNC = UINavigationController()
         favoriteItemsNC.tabBarItem = UITabBarItem(title: String(localized: "favorite_items_tab_name"),
                                                   image: UIImage(systemName: "star.fill"),
                                                   tag: 1)
-        let favoriteItemsCoordinator = FavoriteItemsCoordinator(navigationController: favoriteItemsNC)
+        let favoriteItemsCoordinator = FavoriteItemsCoordinator(navigationController: favoriteItemsNC,
+                                                                moduleFactory: moduleFactory)
         favoriteItemsCoordinator.start()
        
         

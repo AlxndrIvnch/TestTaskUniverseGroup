@@ -8,5 +8,6 @@
 import UIKit
 
 extension UIView {
+    
     var isInViewHierarchy: Bool { window != nil }
 }

@@ -15,10 +15,12 @@ import UIKit
 @MainActor
 final class AppCoordinator {
     
+    private let moduleFactory: ModuleFactoryProtocol
     private let window: UIWindow
 
-    init(window: UIWindow) {
+    init(window: UIWindow, moduleFactory: ModuleFactoryProtocol) {
         self.window = window
+        self.moduleFactory = moduleFactory
     }
     
     func start() {
@@ -26,16 +28,13 @@ final class AppCoordinator {
     }
 
     private func showSplashScreen(onLoadedData: @escaping EmptyClosure) {
-        let splashVM = SplashVM(dataService: DataService.shared,
-                                itemsRepository: ItemsRepository.shared,
-                                onLoadedData: onLoadedData)
-        let splashVC = SplashVC(viewModel: splashVM)
+        let splashVC = moduleFactory.makeSplashVC(onLoadedData: onLoadedData)
         window.rootViewController = splashVC
         window.makeKeyAndVisible()
     }
     
     private func showMainFlow() {
-        let tabBarCoordinator = TabBarCoordinator(window: window)
+        let tabBarCoordinator = TabBarCoordinator(window: window, moduleFactory: moduleFactory)
         tabBarCoordinator.start()
     }
 }
