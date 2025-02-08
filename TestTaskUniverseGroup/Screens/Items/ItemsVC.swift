@@ -131,7 +131,7 @@ final class ItemsVC: BaseVC {
     
     private func updateTableView() {
         let snapshot = viewModel.createSnapshot()
-        dataSource.apply(snapshot, animatingDifferences: true)
+        dataSource.apply(snapshot, animatingDifferences: tableView.isInViewHierarchy)
     }
     
     private let emptyView: UIView = {
