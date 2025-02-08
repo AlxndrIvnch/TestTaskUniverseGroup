@@ -185,11 +185,13 @@ final class ItemsVC: BaseVC {
     }
     
     override func setEditing(_ editing: Bool, animated: Bool) {
-        super.setEditing(editing, animated: animated)
-        if isEditingRow {
+        if editing && isEditingRow {
+            // fix for conflict of editing row (SwipeAction)
+            // and transition to editing table view (selection mode)
             tableView.isEditing = false
             isEditingRow = false
         }
+        super.setEditing(editing, animated: animated)
         tableView.setEditing(editing, animated: animated)
         updateNavigationBarButtons(animated)
         updateToolbarButtons(animated)
@@ -306,6 +308,7 @@ extension ItemsVC: UITableViewDelegate {
         } else {
             Task {
                 await viewModel.toggleItemIsFavorite(at: indexPath)
+                tableView.deselectRow(at: indexPath, animated: true)
             }
         }
     }
