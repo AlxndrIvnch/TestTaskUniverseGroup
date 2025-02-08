@@ -41,7 +41,6 @@ final class TabBarCoordinator {
         
         tabBarController.viewControllers = [allItemsNC, favoriteItemsNC]
         
-        window?.rootViewController = tabBarController
-        window?.makeKeyAndVisible()
-    }
+        window?.setRootViewController(tabBarController)
+    }   
 }

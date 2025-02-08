@@ -249,9 +249,8 @@ final class ItemsVC: BaseVC {
     private func updateTableView() {
         guard tableView.isInViewHierarchy else { return }
         let snapshot = viewModel.createSnapshot()
-        dataSource.apply(snapshot, animatingDifferences: true, completion: { [weak self] in
-            self?.updateEmptyView()
-        })
+        dataSource.apply(snapshot, animatingDifferences: true)
+        updateEmptyView()
     }
     
     private func updateEmptyView() {
