@@ -29,6 +29,7 @@ final class SplashVC: BaseVC {
         }
         label.textColor = .systemGray6
         label.textAlignment = .center
+        label.numberOfLines = 0
         return label
     }()
     
