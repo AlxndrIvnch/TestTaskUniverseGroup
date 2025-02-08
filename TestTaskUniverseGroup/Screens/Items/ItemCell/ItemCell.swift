@@ -17,8 +17,8 @@ final class ItemCell: UITableViewCell {
         super.updateConfiguration(using: state)
         var contentConfig = defaultContentConfiguration().updated(for: state)
         contentConfig.text = viewModel?.text
-        contentConfig.imageProperties.tintColor = .systemBlue
-        contentConfig.image = UIImage(systemName: "star\(viewModel?.isFavorite == true ? ".fill" : "")")
+        let imageName = "star\(viewModel?.isFavorite == true ? ".fill" : "")"
+        contentConfig.image = UIImage(systemName: imageName)
         contentConfiguration = contentConfig
     }
 }

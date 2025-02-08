@@ -16,6 +16,7 @@ final class FavoriteItemsVM: ItemsVMProtocol {
     var title: String { "Favorite Items" }
     var showMarkFavoriteButton: Bool { false }
     var showRemoveFromFavoriteButton: Bool { true }
+    var textWhenEmpty: String { "No favorites yet. Tap an item to mark it as a favorite." }
     
     private let itemsRepository: ItemsRepositoryProtocol
     

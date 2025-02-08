@@ -16,6 +16,7 @@ final class AllItemsVM: ItemsVMProtocol {
     var title: String { "All Items" }
     var showRemoveFromFavoriteButton: Bool { true }
     var showMarkFavoriteButton: Bool { true }
+    var textWhenEmpty: String { "No Items Available." }
     
     private let itemsRepository: ItemsRepositoryProtocol
     

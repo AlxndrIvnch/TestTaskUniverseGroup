@@ -16,6 +16,7 @@ protocol ItemsVMProtocol: AnyObject {
     var title: String { get }
     var showRemoveFromFavoriteButton: Bool { get }
     var showMarkFavoriteButton: Bool { get }
+    var textWhenEmpty: String { get }
     
     func createSnapshot() -> NSDiffableDataSourceSnapshot<Int, ItemCell.ViewModel>
     func markItems(at indexPaths: [IndexPath], asFavorite: Bool) async

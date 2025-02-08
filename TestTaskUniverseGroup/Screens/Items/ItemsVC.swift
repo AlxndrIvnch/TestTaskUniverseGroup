@@ -134,11 +134,15 @@ final class ItemsVC: BaseVC {
         dataSource.apply(snapshot, animatingDifferences: tableView.isInViewHierarchy)
     }
     
-    private let emptyView: UIView = {
-        let view = UIView() //TODO: Create
-        view.isHidden = true
-        view.backgroundColor = .red
-        return view
+    private lazy var emptyView: UILabel = {
+        let label = UILabel()
+        label.isHidden = true
+        label.text = viewModel.textWhenEmpty
+        label.textAlignment = .center
+        label.textColor = UIColor.secondaryLabel
+        label.font = UIFont.preferredFont(forTextStyle: .body)
+        label.numberOfLines = 0
+        return label
     }()
     
     private let activityIndicator = UIActivityIndicatorView(style: .large)
@@ -257,7 +261,6 @@ final class ItemsVC: BaseVC {
     
     private func updateEmptyView() {
         emptyView.isHidden = !tableView.isEmpty
-//        emptyView.text = viewModel.emptyText
     }
     
     private func updateNavigationBarButtons(_ animated: Bool = true) {
