@@ -5,11 +5,6 @@
 //  Created by Oleksandr Ivanchenko on 2/7/25.
 //
 
-//protocol Coordinator {
-//    var childCoordinators: [Coordinator] { get set }
-//    func start()
-//}
-
 import UIKit
 
 @MainActor

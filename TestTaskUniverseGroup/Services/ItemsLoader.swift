@@ -27,6 +27,6 @@ actor ItemsLoader: ItemsLoaderProtocol {
             try await Task.sleep(for: .seconds(sleepInterval), tolerance: .milliseconds(100))
             progressHandler?(Double(step) / Double(steps))
         }
-        return (1...50).map { Item(id: $0, title: "Item \($0)", isFavorite: false) }
+        return (1...100).map { Item(id: $0, title: "Item \($0)", isFavorite: false) }
     }
 }
