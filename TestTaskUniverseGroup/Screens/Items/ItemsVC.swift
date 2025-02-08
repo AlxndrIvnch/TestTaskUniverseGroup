@@ -172,15 +172,6 @@ final class ItemsVC: BaseVC {
         tableView.flashScrollIndicators()
     }
     
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        super.viewWillTransition(to: size, with: coordinator)
-        coordinator.animate { [weak self] _ in //TODO: Check
-            self?.tableView.reloadData()
-        } completion: { [weak self] _ in
-            self?.tableView.reloadData()
-        }
-    }
-    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         setEditing(false, animated: animated)
