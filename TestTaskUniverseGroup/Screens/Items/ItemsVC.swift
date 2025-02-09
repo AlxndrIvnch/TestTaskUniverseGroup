@@ -19,11 +19,12 @@ final class ItemsVC: BaseVC {
         button.addAction { [weak self] in
             self?.mark(asFavorite: true)
         }
+        let font = UIFont.preferredFont(forTextStyle: .subheadline)
         button.setTitleTextAttributes([.foregroundColor: UIColor.systemGreen,
-                                       .font: UIFont.preferredFont(forTextStyle: .headline)],
+                                       .font: font],
                                       for: .normal)
         button.setTitleTextAttributes([.foregroundColor: UIColor.systemGray,
-                                       .font: UIFont.preferredFont(forTextStyle: .headline)],
+                                       .font: font],
                                       for: .disabled)
         button.isEnabled = false
         return button
@@ -36,11 +37,12 @@ final class ItemsVC: BaseVC {
         button.addAction { [weak self] in
             self?.mark(asFavorite: false)
         }
+        let font = UIFont.preferredFont(forTextStyle: .subheadline)
         button.setTitleTextAttributes([.foregroundColor: UIColor.systemRed,
-                                       .font: UIFont.preferredFont(forTextStyle: .headline)],
+                                       .font: font],
                                       for: .normal)
         button.setTitleTextAttributes([.foregroundColor: UIColor.systemGray,
-                                       .font: UIFont.preferredFont(forTextStyle: .headline)],
+                                       .font: font],
                                       for: .disabled)
         button.isEnabled = false
         return button
@@ -188,7 +190,7 @@ final class ItemsVC: BaseVC {
         tableView.setEditing(editing, animated: animated)
         updateNavigationBarButtons(animated)
         updateToolbarButtons(animated)
-        navigationController?.setToolbarHidden(!editing, animated: true)
+        navigationController?.setToolbarHidden(!editing, animated: animated)
     }
     
     override func setupNavigationBar(_ animated: Bool) {
