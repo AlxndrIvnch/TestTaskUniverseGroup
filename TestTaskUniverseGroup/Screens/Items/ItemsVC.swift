@@ -220,7 +220,7 @@ final class ItemsVC: BaseVC {
         }
         emptyView.snp.makeConstraints { make in
             make.center.equalToSuperview()
-            make.width.lessThanOrEqualToSuperview().offset(-48)
+            make.width.equalToSuperview().offset(-48)
         }
         activityIndicator.snp.makeConstraints { make in
             make.center.equalToSuperview()
