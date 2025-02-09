@@ -24,9 +24,9 @@ class BaseVC: UIViewController {
         setupBindings()
     }
     
-    func setupConstraints() {}
-    
     func setupView() {}
+    
+    func setupConstraints() {}
     
     func setupBindings() {}
     

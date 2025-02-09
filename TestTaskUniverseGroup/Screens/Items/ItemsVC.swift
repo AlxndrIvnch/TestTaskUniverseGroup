@@ -53,8 +53,7 @@ final class ItemsVC: BaseVC {
         button.title = String(localized: "start_selection")
         button.style = .plain
         button.addAction { [weak self] in
-            guard let self else { return }
-            setEditing(true, animated: true)
+            self?.setEditing(true, animated: true)
         }
         button.setTitleTextAttributes([.foregroundColor: UIColor.systemBlue,
                                        .font: UIFont.preferredFont(forTextStyle: .body)],
@@ -67,8 +66,7 @@ final class ItemsVC: BaseVC {
         button.title = String(localized: "stop_selection")
         button.style = .done
         button.addAction { [weak self] in
-            guard let self else { return }
-            setEditing(false, animated: true)
+            self?.setEditing(false, animated: true)
         }
         button.setTitleTextAttributes([.foregroundColor: UIColor.systemBlue,
                                        .font: UIFont.preferredFont(forTextStyle: .headline)],
@@ -114,19 +112,17 @@ final class ItemsVC: BaseVC {
         tableView.estimatedRowHeight = 44
         tableView.backgroundColor = .clear
         tableView.separatorStyle = .none
-        tableView.automaticallyAdjustsScrollIndicatorInsets = false
         tableView.allowsMultipleSelectionDuringEditing = true
-        tableView.keyboardDismissMode = .onDrag
         tableView.sectionHeaderTopPadding = 0
         tableView.registerCell(with: ItemCell.self)
         return tableView
     }()
     
     private lazy var dataSource: UITableViewDiffableDataSource<Int, ItemCell.ViewModel> = {
-        return UITableViewDiffableDataSource(tableView: tableView) { [weak self] tableView, indexPath, cellVM in
+        return UITableViewDiffableDataSource(tableView: tableView) { [weak view] tableView, indexPath, cellVM in
             let cell: ItemCell = tableView.dequeueCell(for: indexPath)
             cell.viewModel = cellVM
-            cell.backgroundColor = self?.view.backgroundColor
+            cell.backgroundColor = view?.backgroundColor
             return cell
         }
     }()
@@ -212,20 +208,20 @@ final class ItemsVC: BaseVC {
     }
     
     override func setupConstraints() {
-        let safeArea = view.safeAreaLayoutGuide
         view.addSubview(tableView)
+        view.addSubview(emptyView)
+        view.addSubview(activityIndicator)
+        let safeArea = view.safeAreaLayoutGuide
         tableView.snp.makeConstraints { make in
             make.top.centerX.equalTo(safeArea)
             make.width.equalTo(safeArea).priority(.high)
             make.width.lessThanOrEqualTo(800)
             make.bottom.equalToSuperview()
         }
-        view.addSubview(emptyView)
         emptyView.snp.makeConstraints { make in
             make.center.equalToSuperview()
             make.width.lessThanOrEqualToSuperview().offset(-48)
         }
-        view.addSubview(activityIndicator)
         activityIndicator.snp.makeConstraints { make in
             make.center.equalToSuperview()
         }
@@ -341,10 +337,13 @@ extension ItemsVC: UITableViewDelegate {
     func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         guard let actionVMs = viewModel.getLeadingSwipeActions(for: indexPath) else { return nil }
         let actions = actionVMs.map { actionVM in
-            let action = UIContextualAction(style: .normal, title: actionVM.title) { _, _, completion in
+            let style: UIContextualAction.Style = actionVM.isDestructive ? .destructive : .normal
+            let action = UIContextualAction(style: style, title: actionVM.title) { _, _, completion in
                 actionVM.action(completion)
             }
-            action.backgroundColor = .systemBlue
+            if style == .normal {
+                action.backgroundColor = .systemGreen
+            }
             return action
         }
         return .init(actions: actions)

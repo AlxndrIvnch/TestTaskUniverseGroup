@@ -15,6 +15,9 @@ final class SplashVM {
     private let itemsStore: ItemsStoreProtocol
     private let onLoadedItems: EmptyClosure
     
+    private var savedItemsToStore = false
+    private var progressBarFilled = false
+    
     init(itemsLoader: ItemsLoaderProtocol,
          itemsStore: ItemsStoreProtocol,
          onLoadedItems: @escaping EmptyClosure) {
@@ -32,10 +35,21 @@ final class SplashVM {
                     }
                 })
                 await itemsStore.setItems(items)
-                onLoadedItems()
+                savedItemsToStore = true
+                invokeCompletionIfNeeded()
             } catch {
                 onError?(String(localized: "loading_error"))
             }
         }
+    }
+    
+    func progressFillAnimationEnded() {
+        progressBarFilled = true
+        invokeCompletionIfNeeded()
+    }
+    
+    private func invokeCompletionIfNeeded() {
+        guard savedItemsToStore && progressBarFilled else { return }
+        onLoadedItems()
     }
 }

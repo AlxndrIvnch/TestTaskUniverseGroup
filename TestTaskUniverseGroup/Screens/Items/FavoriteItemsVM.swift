@@ -57,7 +57,8 @@ final class FavoriteItemsVM: ItemsVMProtocol {
     
     func getLeadingSwipeActions(for indexPath: IndexPath) -> [SwipeActionVM]? {
         let actionVM = SwipeActionVM(
-            title: String(localized: "remove_item_from_favorites")
+            title: String(localized: "remove_item_from_favorites"),
+            isDestructive: true
         ) { [weak self] completion in
             Task {
                 await self?.markItems(at: [indexPath], asFavorite: false)

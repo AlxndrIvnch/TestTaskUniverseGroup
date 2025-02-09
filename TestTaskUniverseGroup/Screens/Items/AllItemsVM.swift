@@ -72,7 +72,7 @@ final class AllItemsVM: ItemsVMProtocol {
         guard let item = items[safe: indexPath.row] else { return nil }
         let isFavorite = item.isFavorite
         let title = isFavorite ? String(localized: "remove_item_from_favorites") : String(localized: "add_item_to_favorites")
-        let actionVM = SwipeActionVM(title: title) { [weak self] completion in
+        let actionVM = SwipeActionVM(title: title, isDestructive: isFavorite) { [weak self] completion in
             Task {
                 await self?.markItems(at: [indexPath], asFavorite: !isFavorite)
                 completion(true)

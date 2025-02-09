@@ -10,14 +10,14 @@ import UIKit
 struct SwipeActionVM {
     
     let title: String?
-    let image: UIImage?
+    let isDestructive: Bool
     let action: SimpleCallbackClosure<Bool>
     
     init(title: String? = nil,
-         image: UIImage? = nil,
+         isDestructive: Bool = false,
          action: @escaping SimpleCallbackClosure<Bool>) {
         self.title = title
-        self.image = image
+        self.isDestructive = isDestructive
         self.action = action
     }
 }

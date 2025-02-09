@@ -41,8 +41,8 @@ actor ItemsStore: ItemsStoreProtocol {
     
     func markItems(with ids: [Int], asFavorite: Bool) {
         var copy = items
-        for id in ids {
-            guard let index = copy.firstIndex(where: { $0.id == id }) else { continue }
+        for itemId in ids {
+            guard let index = copy.firstIndex(where: { $0.id == itemId }) else { continue }
             copy[safe: index]?.isFavorite = asFavorite
         }
         items = copy

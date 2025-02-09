@@ -100,8 +100,12 @@ final class SplashVC: BaseVC {
     
     override func setupBindings() {
         viewModel.onProgress = { [weak self] progress in
-            UIView.animate(withDuration: progress < 1 ? 0.25 : 0, delay: 0, options: [.curveEaseOut]) {
-                self?.progressView.setProgress(progress, animated: true)
+            self?.progressView.progress = progress
+            UIView.animate(withDuration: 0.25, delay: 0, options: [.curveEaseOut]) {
+                self?.progressView.layoutIfNeeded()
+            } completion: { _ in
+                guard progress == 1 else { return }
+                self?.viewModel.progressFillAnimationEnded()
             }
         }
         viewModel.onError = { [weak self] in
