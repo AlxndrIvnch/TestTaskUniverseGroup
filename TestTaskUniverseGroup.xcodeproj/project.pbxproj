@@ -296,8 +296,8 @@
 		11A555A02D58E07900FA631A /* ServicesTests */ = {
 			isa = PBXGroup;
 			children = (
-				11A555982D58DF7400FA631A /* ItemsStoreTests.swift */,
 				11A5559A2D58DFBA00FA631A /* ItemsLoaderTests.swift */,
+				11A555982D58DF7400FA631A /* ItemsStoreTests.swift */,
 			);
 			path = ServicesTests;
 			sourceTree = "<group>";
@@ -305,9 +305,9 @@
 		11A555A12D58E09300FA631A /* ViewModelsTests */ = {
 			isa = PBXGroup;
 			children = (
-				11A555A22D58E0A400FA631A /* FavoriteItemsVMTests.swift */,
 				11A5559C2D58E01100FA631A /* SplashVMTests.swift */,
 				11A5559E2D58E05500FA631A /* AllItemsVMTests.swift */,
+				11A555A22D58E0A400FA631A /* FavoriteItemsVMTests.swift */,
 			);
 			path = ViewModelsTests;
 			sourceTree = "<group>";
