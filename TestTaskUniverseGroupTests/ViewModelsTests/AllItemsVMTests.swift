@@ -9,7 +9,7 @@ import Testing
 @testable import TestTaskUniverseGroup
 import Foundation
 
-final class AllItemsVMTests {
+struct AllItemsVMTests {
     
     private let fakeStore = ItemsStoreMock()
     

@@ -8,17 +8,17 @@
 import Testing
 @testable import TestTaskUniverseGroup
 
-@MainActor
-final class ItemsLoaderTests {
+struct ItemsLoaderTests {
     
     private let itemsLoader = ItemsLoader()
-    private var progress = 0.0
     
     @Test(.timeLimit(.minutes(1)))
     func testLoadItemsProgressAndResult() async throws {
-        let items = try await itemsLoader.loadItems { [weak self] newProgress in
+        var progress = 0.0
+        
+        let items = try await itemsLoader.loadItems { newProgress in
             Task { @MainActor in
-                self?.progress = newProgress
+                progress = newProgress
             }
         }
         #expect(items.count >= 20, "Minimum items count is 20")
