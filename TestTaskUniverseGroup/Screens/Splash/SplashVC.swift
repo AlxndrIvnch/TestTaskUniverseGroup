@@ -45,6 +45,8 @@ final class SplashVC: BaseVC {
     private let gradientLayer: CAGradientLayer = {
         let layer = CAGradientLayer()
         layer.colors = .init(repeating: UIColor.splashScreenBackground.cgColor, count: 3)
+        layer.startPoint = .zero
+        layer.endPoint = .init(x: 1, y: 1)
         return layer
     }()
 
