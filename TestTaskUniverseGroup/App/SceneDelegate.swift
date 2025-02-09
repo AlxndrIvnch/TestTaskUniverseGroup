@@ -20,8 +20,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         self.window = window
         
         let container = DependencyContainer(itemsLoader: ItemsLoader(), itemsStore: ItemsStore())
-        let moduleFactory = ModuleFactory(container: container)
-        appCoordinator = AppCoordinator(window: window, moduleFactory: moduleFactory)
+        let factory = ModuleFactory(container: container)
+        appCoordinator = AppCoordinator(window: window, moduleFactory: factory)
         appCoordinator?.start()
     }
 }

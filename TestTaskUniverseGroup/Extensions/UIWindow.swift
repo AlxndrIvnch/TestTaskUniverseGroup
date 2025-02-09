@@ -27,16 +27,16 @@ extension UIWindow {
         maskLayer.frame = snapshot.bounds
         maskLayer.fillRule = .evenOdd
         
+        snapshot.layer.mask = maskLayer
+        
         // from
-        let initialRadius = 50.0
+        let initialRadius = 1.0
         let initialCircleRect = CGRect(x: snapshot.bounds.midX - initialRadius,
                                        y: snapshot.bounds.midY - initialRadius,
                                        width: initialRadius * 2,
                                        height: initialRadius * 2)
         let initialPath = UIBezierPath(rect: snapshot.bounds)
         initialPath.append(UIBezierPath(ovalIn: initialCircleRect))
-        maskLayer.path = initialPath.cgPath
-        snapshot.layer.mask = maskLayer
         
         // to
         let finalRadius = max(snapshot.bounds.width, snapshot.bounds.height)
@@ -58,11 +58,8 @@ extension UIWindow {
         let pathAnimation = CABasicAnimation(keyPath: "path")
         pathAnimation.fromValue = initialPath.cgPath
         pathAnimation.toValue = finalPath.cgPath
-        pathAnimation.duration = duration
         pathAnimation.timingFunction = .init(name: .easeIn)
         maskLayer.add(pathAnimation, forKey: "pathAnimation")
-        
-        maskLayer.path = finalPath.cgPath
         
         CATransaction.commit()
     }
