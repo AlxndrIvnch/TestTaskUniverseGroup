@@ -7,6 +7,8 @@
 
 import UIKit
 import SnapKit
+import RxSwift
+import RxCocoa
 
 final class SplashVC: BaseVC {
     
@@ -49,6 +51,8 @@ final class SplashVC: BaseVC {
         layer.endPoint = .init(x: 1, y: 1)
         return layer
     }()
+    
+    private let disposeBag = DisposeBag()
 
     init(viewModel: SplashVM) {
         self.viewModel = viewModel
@@ -61,7 +65,7 @@ final class SplashVC: BaseVC {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        viewModel.viewDidLoad()
+        viewModel.input.viewDidLoad.accept(())
     }
     
     override func setupView() {
@@ -75,10 +79,10 @@ final class SplashVC: BaseVC {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        Task {
-            try await Task.sleep(for: .seconds(0.5))
-            animateGradientTransition()
-        }
+        Observable.just(())
+            .delay(.milliseconds(500), scheduler: MainScheduler.instance)
+            .subscribe(with: self, onCompleted: { $0.animateGradientTransition() })
+            .disposed(by: disposeBag)
     }
     
     override func setupConstraints() {
@@ -101,18 +105,22 @@ final class SplashVC: BaseVC {
     }
     
     override func setupBindings() {
-        viewModel.onProgress = { [weak self] progress in
-            self?.progressView.progress = progress
-            UIView.animate(withDuration: 0.25, delay: 0, options: [.curveEaseOut]) {
-                self?.progressView.layoutIfNeeded()
-            } completion: { _ in
-                guard progress == 1 else { return }
-                self?.viewModel.progressFillAnimationEnded()
-            }
-        }
-        viewModel.onError = { [weak self] in
-            self?.errorLabel.text = $0
-        }
+        viewModel.output.progress
+            .do(afterNext: { [weak self] progress in
+                guard let self else { return }
+                let animated = progressView.isInViewHierarchy
+                UIView.animate(withDuration: animated ? 0.4 : 0, delay: 0, options: [.curveEaseOut]) {
+                    self.progressView.layoutIfNeeded()
+                } completion: { _ in
+                    self.viewModel.input.progressAnimationComplete.accept(progress)
+                }
+            })
+            .drive(progressView.rx.progress)
+            .disposed(by: disposeBag)
+        
+        viewModel.output.error
+            .drive(errorLabel.rx.text)
+            .disposed(by: disposeBag)
     }
     
     private func animateGradientTransition() {

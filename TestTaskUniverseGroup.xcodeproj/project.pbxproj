@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		11944CD42D84D4F000826505 /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = 11944CD32D84D4F000826505 /* RxCocoa */; };
+		11944CD62D84D4F000826505 /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 11944CD52D84D4F000826505 /* RxSwift */; };
+		11944CD92D856C8300826505 /* RxRelay in Frameworks */ = {isa = PBXBuildFile; productRef = 11944CD82D856C8300826505 /* RxRelay */; };
 		11A5550D2D56386A00FA631A /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 11A5550C2D56386A00FA631A /* SnapKit */; };
 		11A555222D563A6100FA631A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 11A5551B2D563A6100FA631A /* Assets.xcassets */; };
 		11A555262D563A6100FA631A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A555162D563A6100FA631A /* SceneDelegate.swift */; };
@@ -107,6 +110,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				11944CD62D84D4F000826505 /* RxSwift in Frameworks */,
+				11944CD42D84D4F000826505 /* RxCocoa in Frameworks */,
+				11944CD92D856C8300826505 /* RxRelay in Frameworks */,
 				11A5550D2D56386A00FA631A /* SnapKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -121,11 +127,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		11944CD72D856C8300826505 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		11A554EA2D56375D00FA631A = {
 			isa = PBXGroup;
 			children = (
 				11A555212D563A6100FA631A /* TestTaskUniverseGroup */,
 				11A555912D58DF0800FA631A /* TestTaskUniverseGroupTests */,
+				11944CD72D856C8300826505 /* Frameworks */,
 				11A554F42D56375D00FA631A /* Products */,
 			);
 			sourceTree = "<group>";
@@ -330,6 +344,9 @@
 			name = TestTaskUniverseGroup;
 			packageProductDependencies = (
 				11A5550C2D56386A00FA631A /* SnapKit */,
+				11944CD32D84D4F000826505 /* RxCocoa */,
+				11944CD52D84D4F000826505 /* RxSwift */,
+				11944CD82D856C8300826505 /* RxRelay */,
 			);
 			productName = TestTaskUniverseGroup;
 			productReference = 11A554F32D56375D00FA631A /* TestTaskUniverseGroup.app */;
@@ -385,6 +402,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				11A5550B2D56386A00FA631A /* XCRemoteSwiftPackageReference "SnapKit" */,
+				11944CD22D84D4F000826505 /* XCRemoteSwiftPackageReference "RxSwift" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 11A554F42D56375D00FA631A /* Products */;
@@ -726,6 +744,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		11944CD22D84D4F000826505 /* XCRemoteSwiftPackageReference "RxSwift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ReactiveX/RxSwift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.9.0;
+			};
+		};
 		11A5550B2D56386A00FA631A /* XCRemoteSwiftPackageReference "SnapKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SnapKit/SnapKit.git";
@@ -737,6 +763,21 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		11944CD32D84D4F000826505 /* RxCocoa */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 11944CD22D84D4F000826505 /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxCocoa;
+		};
+		11944CD52D84D4F000826505 /* RxSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 11944CD22D84D4F000826505 /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxSwift;
+		};
+		11944CD82D856C8300826505 /* RxRelay */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 11944CD22D84D4F000826505 /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxRelay;
+		};
 		11A5550C2D56386A00FA631A /* SnapKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 11A5550B2D56386A00FA631A /* XCRemoteSwiftPackageReference "SnapKit" */;
