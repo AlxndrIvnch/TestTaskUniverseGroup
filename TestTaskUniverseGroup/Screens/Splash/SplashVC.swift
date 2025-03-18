@@ -106,13 +106,12 @@ final class SplashVC: BaseVC {
     
     override func setupBindings() {
         viewModel.output.progress
-            .do(afterNext: { [weak self] progress in
-                guard let self else { return }
+            .do(afterNext: { [unowned self] progress in
                 let animated = progressView.isInViewHierarchy
                 UIView.animate(withDuration: animated ? 0.4 : 0, delay: 0, options: [.curveEaseOut]) {
                     self.progressView.layoutIfNeeded()
                 } completion: { _ in
-                    self.viewModel.input.progressAnimationComplete.accept(progress)
+                    self.viewModel.input.progressAnimationCompleted.accept(progress)
                 }
             })
             .drive(progressView.rx.progress)

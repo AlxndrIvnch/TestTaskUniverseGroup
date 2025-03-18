@@ -13,7 +13,7 @@ final class SplashVM {
     
     struct Input {
         let viewDidLoad: PublishRelay<Void>
-        let progressAnimationComplete: PublishRelay<Float>
+        let progressAnimationCompleted: PublishRelay<Float>
     }
     
     struct Output {
@@ -26,6 +26,10 @@ final class SplashVM {
     
     private let itemsLoader: ItemsLoaderProtocol
     private let itemsStore: ItemsStoreProtocol
+    private let viewDidLoad = PublishRelay<Void>()
+    private let progressAnimationCompleted = PublishRelay<Float>()
+    private let progress = PublishRelay<Float>()
+    private let error = PublishRelay<String?>()
     private let disposeBag = DisposeBag()
     
     init(itemsLoader: ItemsLoaderProtocol,
@@ -34,31 +38,33 @@ final class SplashVM {
         self.itemsLoader = itemsLoader
         self.itemsStore = itemsStore
 
-        let viewDidLoad = PublishRelay<Void>()
-        let progressAnimationComplete = PublishRelay<Float>()
         input = .init(
             viewDidLoad: viewDidLoad,
-            progressAnimationComplete: progressAnimationComplete
+            progressAnimationCompleted: progressAnimationCompleted
         )
         
-        let progress = BehaviorRelay<Float>(value: 0)
-        let error = BehaviorRelay<String?>(value: nil)
         output = .init(
-            progress: progress.asDriver(),
-            error: error.asDriver()
+            progress: progress
+                .startWith(0)
+                .asDriver(onErrorDriveWith: .empty()),
+            error: error
+                .startWith(nil)
+                .asDriver(onErrorDriveWith: .empty())
         )
         
         viewDidLoad
             .asInfallible()
-            .flatMap {
+            .flatMap { [unowned self] in
                 itemsLoader.loadItems(progress: progress)
-                    .do(onError: { _ in error.accept(String(localized: "loading_error")) })
+                    .do(onError: { [unowned self] _ in
+                        error.accept(String(localized: "loading_error"))
+                    })
                     .asInfallible(onErrorFallbackTo: .empty())
             }
-            .bind(to: itemsStore.input.setItems)
+            .bind(onNext: itemsStore.setItems)
             .disposed(by: disposeBag)
         
-        progressAnimationComplete
+        progressAnimationCompleted
             .skip { $0 < 1 }
             .subscribe(onNext: { _ in onLoadedItems() })
             .disposed(by: disposeBag)
