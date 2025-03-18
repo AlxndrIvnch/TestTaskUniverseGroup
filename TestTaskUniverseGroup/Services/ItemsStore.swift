@@ -6,49 +6,42 @@
 //
 
 import Foundation
+import RxSwift
+import RxRelay
 
-protocol ItemsStoreProtocol: Actor {
-    var items: [Item] { get }
-    var updates: AsyncStream<[Item]> { get }
+protocol ItemsStoreProtocol {
+    var items: Infallible<[Item]> { get }
+    
     func setItems(_ items: [Item])
     func markItems(with ids: [Int], asFavorite: Bool)
 }
 
-actor ItemsStore: ItemsStoreProtocol {
+final class ItemsStore: ItemsStoreProtocol {
     
-    private(set) var items = [Item]() {
-        didSet { continuations.forEach { $0.value.yield(items) } }
-    }
+    var items: Infallible<[Item]> { itemsRelay.asInfallible() }
     
-    var updates: AsyncStream<[Item]> {
-        AsyncStream { continuation in
-            let id = UUID()
-            continuations[id] = continuation
-            continuation.onTermination = { [weak self] _ in
-                Task {
-                    await self?.removeContinuation(with: id)
-                }
-            }
-            continuation.yield(items)
-        }
-    }
-    
-    private var continuations = [UUID: AsyncStream<[Item]>.Continuation]()
+    private let itemsRelay = BehaviorRelay<[Item]>(value: [])
+    private let serialScheduler = SerialDispatchQueueScheduler(internalSerialQueueName: "com.example.itemsStore")
+    private let disposeBag = DisposeBag()
     
     func setItems(_ items: [Item]) {
-        self.items = items
+        Observable.just(items)
+            .observe(on: serialScheduler)
+            .bind(to: itemsRelay)
+            .disposed(by: disposeBag)
     }
     
     func markItems(with ids: [Int], asFavorite: Bool) {
-        var copy = items
-        for itemId in ids {
-            guard let index = copy.firstIndex(where: { $0.id == itemId }) else { continue }
-            copy[safe: index]?.isFavorite = asFavorite
-        }
-        items = copy
-    }
-    
-    private func removeContinuation(with id: UUID) {
-        continuations.removeValue(forKey: id)
+        itemsRelay
+            .observe(on: serialScheduler)
+            .take(1)
+            .map { currentItems in
+                ids.reduce(into: currentItems) { items, itemId in
+                    guard let index = items.firstIndex(where: { $0.id == itemId }) else { return }
+                    items[index].isFavorite = asFavorite
+                }
+            }
+            .bind(to: itemsRelay)
+            .disposed(by: disposeBag)
     }
 }
