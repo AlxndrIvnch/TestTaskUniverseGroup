@@ -6,22 +6,29 @@
 //
 
 import Foundation
-import UIKit.NSDiffableDataSourceSectionSnapshot
+import RxSwift
+import RxCocoa
 
-@MainActor
 protocol ItemsVMProtocol: AnyObject {
-    var onUpdateUI: EmptyClosure? { get set }
-    var onLoading: SimpleClosure<Bool>? { get set }
+    var input: ItemsVMInput { get }
+    var output: ItemsVMOutput { get }
     
-    var title: String { get }
-    var showRemoveFromFavoriteButton: Bool { get }
-    var showMarkFavoriteButton: Bool { get }
-    var textWhenEmpty: String { get }
-    
-    func createSnapshot() -> NSDiffableDataSourceSnapshot<Int, ItemCell.ViewModel>
-    func markItems(at indexPaths: [IndexPath], asFavorite: Bool) async
-    func toggleItemIsFavorite(at indexPath: IndexPath) async
-    func getLeadingSwipeActions(for indexPath: IndexPath) -> [SwipeActionVM]?
-    func canMarkFavorite(at indexPaths: [IndexPath]) -> Bool
-    func canRemoveFromFavorite(at indexPaths: [IndexPath]) -> Bool
+    func getLeadingSwipeActions(for indexPath: IndexPath) -> [SwipeActionVM]? // ?
+}
+
+struct ItemsVMInput {
+    let viewWillAppear: PublishRelay<Void>
+    let didSelectRow: PublishRelay<IndexPath>
+    let indexPathsForSelectedRows: PublishRelay<[IndexPath]>
+    let markItemsAction: PublishRelay<Bool>
+}
+
+struct ItemsVMOutput {
+    let title: Driver<String>
+    let emptyStateText: Driver<String?>
+    let cellVMs: Driver<[ItemCell.ViewModel]>
+    let canMarkFavorite: Driver<Bool>
+    let showMarkFavoriteButton: Driver<Bool>
+    let canRemoveFromFavorite: Driver<Bool>
+    let showRemoveFromFavoriteButton: Driver<Bool>
 }

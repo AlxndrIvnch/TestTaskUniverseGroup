@@ -7,8 +7,13 @@
 
 import UIKit
 import SnapKit
+import RxSwift
+import RxCocoa
+import RxDataSources
 
 final class ItemsVC: BaseVC {
+    
+    typealias DataSource = RxTableViewSectionedAnimatedDataSource<AnimatableSectionModel<Int, ItemCell.ViewModel>>
     
     private let viewModel: ItemsVMProtocol
     
@@ -16,9 +21,6 @@ final class ItemsVC: BaseVC {
         let button = UIBarButtonItem()
         button.title = String(localized: "add_item_to_favorites")
         button.style = .done
-        button.addAction { [weak self] in
-            self?.mark(asFavorite: true)
-        }
         let font = UIFont.preferredFont(forTextStyle: .subheadline)
         button.setTitleTextAttributes([.foregroundColor: UIColor.systemGreen,
                                        .font: font],
@@ -34,9 +36,6 @@ final class ItemsVC: BaseVC {
         let button = UIBarButtonItem()
         button.title = String(localized: "remove_item_from_favorites")
         button.style = .done
-        button.addAction { [weak self] in
-            self?.mark(asFavorite: false)
-        }
         let font = UIFont.preferredFont(forTextStyle: .subheadline)
         button.setTitleTextAttributes([.foregroundColor: UIColor.systemRed,
                                        .font: font],
@@ -52,9 +51,6 @@ final class ItemsVC: BaseVC {
         let button = UIBarButtonItem()
         button.title = String(localized: "start_selection")
         button.style = .plain
-        button.addAction { [weak self] in
-            self?.setEditing(true, animated: true)
-        }
         button.setTitleTextAttributes([.foregroundColor: UIColor.systemBlue,
                                        .font: UIFont.preferredFont(forTextStyle: .body)],
                                       for: .normal)
@@ -65,9 +61,6 @@ final class ItemsVC: BaseVC {
         let button = UIBarButtonItem()
         button.title = String(localized: "stop_selection")
         button.style = .done
-        button.addAction { [weak self] in
-            self?.setEditing(false, animated: true)
-        }
         button.setTitleTextAttributes([.foregroundColor: UIColor.systemBlue,
                                        .font: UIFont.preferredFont(forTextStyle: .headline)],
                                       for: .normal)
@@ -78,12 +71,6 @@ final class ItemsVC: BaseVC {
         let button = UIBarButtonItem()
         button.title = String(localized: "select_all_items_action_text")
         button.style = .plain
-        button.addAction { [weak self] in
-            guard let self else { return }
-            tableView.selectAll(animated: false)
-            updateNavigationBarButtons()
-            updateToolbarButtons()
-        }
         button.setTitleTextAttributes([.foregroundColor: UIColor.systemBlue,
                                        .font: UIFont.preferredFont(forTextStyle: .body)],
                                       for: .normal)
@@ -94,12 +81,6 @@ final class ItemsVC: BaseVC {
         let button = UIBarButtonItem()
         button.title = String(localized: "deselect_all_items")
         button.style = .plain
-        button.addAction { [weak self] in
-            guard let self else { return }
-            tableView.deselectAll(animated: false)
-            updateNavigationBarButtons()
-            updateToolbarButtons()
-        }
         button.setTitleTextAttributes([.foregroundColor: UIColor.systemBlue,
                                        .font: UIFont.preferredFont(forTextStyle: .body)],
                                       for: .normal)
@@ -118,19 +99,18 @@ final class ItemsVC: BaseVC {
         return tableView
     }()
     
-    private lazy var dataSource: UITableViewDiffableDataSource<Int, ItemCell.ViewModel> = {
-        return UITableViewDiffableDataSource(tableView: tableView) { [weak view] tableView, indexPath, cellVM in
+    private lazy var dataSource = DataSource(
+        configureCell: { [weak view] _, tableView, indexPath, cellVM in
             let cell: ItemCell = tableView.dequeueCell(for: indexPath)
             cell.viewModel = cellVM
             cell.backgroundColor = view?.backgroundColor
             return cell
-        }
-    }()
+        },
+        canEditRowAtIndexPath: { _, _ in true }
+    )
     
-    private lazy var emptyView: UILabel = {
+    private lazy var emptyStateLabel: UILabel = {
         let label = UILabel()
-        label.isHidden = true
-        label.text = viewModel.textWhenEmpty
         label.textAlignment = .center
         label.textColor = UIColor.secondaryLabel
         label.font = UIFont.preferredFont(forTextStyle: .body)
@@ -138,9 +118,9 @@ final class ItemsVC: BaseVC {
         return label
     }()
     
-    private let activityIndicator = UIActivityIndicatorView(style: .large)
-    
-    private var isEditingRow = false
+    private let isMultipleSelectionOn = BehaviorRelay(value: false)
+    private let selectionChanged = PublishRelay<Void>()
+    private let disposeBag = DisposeBag()
     
     init(viewModel: some ItemsVMProtocol) {
         self.viewModel = viewModel
@@ -162,7 +142,7 @@ final class ItemsVC: BaseVC {
     
     override func viewIsAppearing(_ animated: Bool) {
         super.viewIsAppearing(animated)
-        updateTableView()
+        viewModel.input.viewWillAppear.accept(())
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -172,28 +152,12 @@ final class ItemsVC: BaseVC {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        setEditing(false, animated: animated)
-    }
-    
-    override func setEditing(_ editing: Bool, animated: Bool) {
-        if editing && isEditingRow {
-            // fix for conflict of editing row (SwipeAction)
-            // and transition to editing table view (selection mode)
-            tableView.isEditing = false
-            isEditingRow = false
-        }
-        super.setEditing(editing, animated: animated)
-        tableView.setEditing(editing, animated: animated)
-        updateNavigationBarButtons(animated)
-        updateToolbarButtons(animated)
-        navigationController?.setToolbarHidden(!editing, animated: animated)
+        isMultipleSelectionOn.accept(false)
     }
     
     override func setupNavigationBar(_ animated: Bool) {
         navigationController?.setNavigationBarHidden(false, animated: animated)
         navigationController?.navigationBar.prefersLargeTitles = true
-        navigationItem.title = viewModel.title
-        updateNavigationBarButtons(animated)
     }
     
     private func setupToolBar() {
@@ -204,13 +168,11 @@ final class ItemsVC: BaseVC {
         navigationController?.toolbar.compactAppearance = appearance
         navigationController?.toolbar.scrollEdgeAppearance = appearance
         navigationController?.toolbar.compactScrollEdgeAppearance = appearance
-        updateToolbarButtons()
     }
     
     override func setupConstraints() {
         view.addSubview(tableView)
-        view.addSubview(emptyView)
-        view.addSubview(activityIndicator)
+        view.addSubview(emptyStateLabel)
         let safeArea = view.safeAreaLayoutGuide
         tableView.snp.makeConstraints { make in
             make.top.centerX.equalTo(safeArea)
@@ -218,121 +180,164 @@ final class ItemsVC: BaseVC {
             make.width.lessThanOrEqualTo(800)
             make.bottom.equalToSuperview()
         }
-        emptyView.snp.makeConstraints { make in
+        emptyStateLabel.snp.makeConstraints { make in
             make.center.equalToSuperview()
             make.width.equalToSuperview().offset(-48)
-        }
-        activityIndicator.snp.makeConstraints { make in
-            make.center.equalToSuperview()
         }
     }
     
     override func setupBindings() {
-        viewModel.onUpdateUI = { [weak self] in
-            guard let self else { return }
-            updateTableView()
-            updateToolbarButtons()
+        
+        // MARK: ViewModel Output
+        
+        viewModel.output.title
+            .drive(navigationItem.rx.title)
+            .disposed(by: disposeBag)
+        
+        viewModel.output.cellVMs
+            .filter { [unowned self] _ in tableView.isInViewHierarchy }
+            .map { [AnimatableSectionModel(model: 0, items: $0)] }
+            .drive(tableView.rx.items(dataSource: dataSource))
+            .disposed(by: disposeBag)
+        
+        viewModel.output.emptyStateText
+            .drive(emptyStateLabel.rx.text)
+            .disposed(by: disposeBag)
+        
+        viewModel.output.showRemoveFromFavoriteButton
+            .map { !$0 }
+            .drive(removeFromFavoriteButton.rx.isHidden)
+            .disposed(by: disposeBag)
+        
+        viewModel.output.showMarkFavoriteButton
+            .map { !$0 }
+            .drive(markFavoriteButton.rx.isHidden)
+            .disposed(by: disposeBag)
+        
+        viewModel.output.canRemoveFromFavorite
+            .drive(removeFromFavoriteButton.rx.isEnabled)
+            .disposed(by: disposeBag)
+        
+        viewModel.output.canMarkFavorite
+            .drive(markFavoriteButton.rx.isEnabled)
+            .disposed(by: disposeBag)
+        
+        // MARK: ViewModel Input
+        
+        Infallible.merge(
+            markFavoriteButton.rx.tap.asInfallible().map { true },
+            removeFromFavoriteButton.rx.tap.asInfallible().map { false }
+        )
+        .do(afterNext: { [weak self] _ in
+            self?.isMultipleSelectionOn.accept(false)
+        })
+        .bind(to: viewModel.input.markItemsAction)
+        .disposed(by: disposeBag)
+        
+        tableView.rx.itemSelected
+            .asInfallible()
+            .filter { [tableView] _ in !tableView.isEditing }
+            .bind(to: viewModel.input.didSelectRow)
+            .disposed(by: disposeBag)
+        
+        Infallible.combineLatest(
+            selectionChanged.asInfallible(),
+            isMultipleSelectionOn.asInfallible(),
+            resultSelector: { _, isMultipleSelectionOn in isMultipleSelectionOn }
+        )
+        .map { [tableView] isMultipleSelectionOn in
+            isMultipleSelectionOn ? tableView.indexPathsForSelectedRows ?? [] : []
         }
-        viewModel.onLoading = { [weak self] isLoading in
-            guard let self = self else { return }
-            if isLoading {
-                activityIndicator.startAnimating()
-            } else {
-                activityIndicator.stopAnimating()
+        .distinctUntilChanged()
+        .bind(to: viewModel.input.indexPathsForSelectedRows)
+        .disposed(by: disposeBag)
+        
+        // MARK: Internal
+        
+        Infallible.merge(
+            selectButton.rx.tap.asInfallible().map { true },
+            doneButton.rx.tap.asInfallible().map { false }
+        )
+        .bind(to: isMultipleSelectionOn)
+        .disposed(by: disposeBag)
+        
+        Infallible.merge(
+            isMultipleSelectionOn.asInfallible().map { _ in },
+            tableView.rx.itemSelected.asInfallible().map { _ in },
+            tableView.rx.itemDeselected.asInfallible().map { _ in }
+        )
+        .bind(to: selectionChanged)
+        .disposed(by: disposeBag)
+        
+        selectAllButton.rx.tap
+            .asInfallible()
+            .do(afterNext: { [unowned self] in selectionChanged.accept(()) })
+            .bind(onNext: { [tableView] _ in
+                tableView.selectAll(animated: false)
+            })
+            .disposed(by: disposeBag)
+        
+        deselectAllButton.rx.tap
+            .asInfallible()
+            .do(afterNext: { [unowned self] in selectionChanged.accept(()) })
+            .bind(onNext: { [tableView] _ in
+                tableView.deselectAll(animated: false)
+            })
+            .disposed(by: disposeBag)
+        
+        isMultipleSelectionOn
+            .asInfallible()
+            .bind(onNext: { [tableView] in
+                tableView.setEditing($0, animated: true)
+            })
+            .disposed(by: disposeBag)
+        
+        isMultipleSelectionOn
+            .asInfallible()
+            .map { !$0 }
+            .bind(onNext: { [navigationController] in
+                navigationController?.setToolbarHidden($0, animated: true)
+            })
+            .disposed(by: disposeBag)
+        
+        isMultipleSelectionOn
+            .asInfallible()
+            .map { [unowned self] isMultipleSelectionOn in
+                isMultipleSelectionOn ? doneButton : selectButton
             }
-            view.isUserInteractionEnabled = !isLoading
-        }
-    }
-    
-    private func updateTableView() {
-        guard tableView.isInViewHierarchy else { return }
-        let snapshot = viewModel.createSnapshot()
-        dataSource.apply(snapshot, animatingDifferences: true)
-        updateEmptyView()
-    }
-    
-    private func updateEmptyView() {
-        emptyView.isHidden = !tableView.isEmpty
-    }
-    
-    private func updateNavigationBarButtons(_ animated: Bool = true) {
-        let rightBarButton = isEditing ? doneButton : selectButton
-        navigationItem.setRightBarButton(rightBarButton, animated: animated)
-        if isEditing && !tableView.isEmpty {
-            let leftBarButton = tableView.isAllCellsSelected ? deselectAllButton : selectAllButton
-            navigationItem.setLeftBarButton(leftBarButton, animated: animated)
-        } else {
-            navigationItem.setLeftBarButton(nil, animated: animated)
-        }
-    }
-    
-    private func updateToolbarButtons(_ animated: Bool = true) {
-        var buttons = [UIBarButtonItem]()
-        if viewModel.showRemoveFromFavoriteButton {
-            buttons.append(removeFromFavoriteButton)
-        }
-        if viewModel.showMarkFavoriteButton {
-            buttons.append(markFavoriteButton)
-        }
+            .bind(to: navigationItem.rx.rightBarButtonItem)
+            .disposed(by: disposeBag)
         
-        let indexPaths = tableView.indexPathsForSelectedRows ?? []
-        removeFromFavoriteButton.isEnabled = viewModel.canRemoveFromFavorite(at: indexPaths)
-        markFavoriteButton.isEnabled = viewModel.canMarkFavorite(at: indexPaths)
+        Infallible.combineLatest(
+            selectionChanged.asInfallible(),
+            isMultipleSelectionOn.asInfallible(),
+            resultSelector: { _, isMultipleSelectionOn in isMultipleSelectionOn }
+        )
+        .map { [unowned self] isMultipleSelectionOn in
+            guard isMultipleSelectionOn && !tableView.isEmpty else { return nil }
+            return tableView.isAllCellsSelected ? deselectAllButton : selectAllButton
+        }
+        .distinctUntilChanged()
+        .bind(to: navigationItem.rx.leftBarButtonItem)
+        .disposed(by: disposeBag)
         
-        let toolbarItems = buttons.reduce([UIBarButtonItem.flexibleSpace()]) {
-            return $0 + [$1, .flexibleSpace()]
+        Infallible.merge(
+            removeFromFavoriteButton.rx.observe(\.isHidden).asInfallible(onErrorFallbackTo: .empty()),
+            markFavoriteButton.rx.observe(\.isHidden).asInfallible(onErrorFallbackTo: .empty())
+        )
+        .flatMap { [unowned self] _ in
+            Observable.of(removeFromFavoriteButton, markFavoriteButton)
+                .filter { !$0.isHidden }
+                .reduce([.flexibleSpace()]) { $0 + [$1, .flexibleSpace()] }
         }
-        setToolbarItems(toolbarItems, animated: animated)
-    }
-    
-    private func mark(asFavorite: Bool) {
-        guard let indexPaths = tableView.indexPathsForSelectedRows else { return }
-        Task {
-            await viewModel.markItems(at: indexPaths, asFavorite: asFavorite)
-            setEditing(false, animated: true)
-        }
+        .bind(onNext: { [unowned self] buttons in
+            self.setToolbarItems(buttons, animated: true)
+        })
+        .disposed(by: disposeBag)
     }
 }
 
 extension ItemsVC: UITableViewDelegate {
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if tableView.isEditing {
-            updateNavigationBarButtons()
-            updateToolbarButtons()
-        } else {
-            Task {
-                await viewModel.toggleItemIsFavorite(at: indexPath)
-                tableView.deselectRow(at: indexPath, animated: true)
-            }
-        }
-    }
-    
-    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-        if tableView.isEditing {
-            updateNavigationBarButtons()
-            updateToolbarButtons()
-        }
-    }
-    
-    func tableView(_ tableView: UITableView, willBeginEditingRowAt indexPath: IndexPath) {
-        tableView.allowsMultipleSelectionDuringEditing = false
-        isEditingRow = true
-    }
-    
-    func tableView(_ tableView: UITableView, didEndEditingRowAt indexPath: IndexPath?) {
-        isEditingRow = false
-        tableView.allowsMultipleSelectionDuringEditing = true
-    }
-    
-    func tableView(_ tableView: UITableView, shouldBeginMultipleSelectionInteractionAt indexPath: IndexPath) -> Bool {
-        return true
-    }
-    
-    func tableView(_ tableView: UITableView, didBeginMultipleSelectionInteractionAt indexPath: IndexPath) {
-        guard !isEditing else { return }
-        setEditing(true, animated: true)
-    }
     
     func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         guard let actionVMs = viewModel.getLeadingSwipeActions(for: indexPath) else { return nil }
