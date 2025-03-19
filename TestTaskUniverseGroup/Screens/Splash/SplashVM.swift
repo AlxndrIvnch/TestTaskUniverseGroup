@@ -24,8 +24,6 @@ final class SplashVM {
     let input: Input
     let output: Output
     
-    private let itemsLoader: ItemsLoaderProtocol
-    private let itemsStore: ItemsStoreProtocol
     private let viewDidLoad = PublishRelay<Void>()
     private let progressAnimationCompleted = PublishRelay<Float>()
     private let progress = PublishRelay<Float>()
@@ -35,9 +33,7 @@ final class SplashVM {
     init(itemsLoader: ItemsLoaderProtocol,
          itemsStore: ItemsStoreProtocol,
          onLoadedItems: @escaping EmptyClosure) {
-        self.itemsLoader = itemsLoader
-        self.itemsStore = itemsStore
-
+        
         input = .init(
             viewDidLoad: viewDidLoad,
             progressAnimationCompleted: progressAnimationCompleted
@@ -51,7 +47,7 @@ final class SplashVM {
                 .startWith(nil)
                 .asDriver(onErrorDriveWith: .empty())
         )
-        
+
         viewDidLoad
             .asInfallible()
             .flatMap { [unowned self] in

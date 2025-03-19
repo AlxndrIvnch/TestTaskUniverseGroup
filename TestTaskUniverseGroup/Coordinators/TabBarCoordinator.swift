@@ -7,7 +7,6 @@
 
 import UIKit
 
-@MainActor
 final class TabBarCoordinator {
     
     private let moduleFactory: ModuleFactoryProtocol

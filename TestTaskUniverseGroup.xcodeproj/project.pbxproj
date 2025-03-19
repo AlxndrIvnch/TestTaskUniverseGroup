@@ -10,6 +10,7 @@
 		11944CD42D84D4F000826505 /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = 11944CD32D84D4F000826505 /* RxCocoa */; };
 		11944CD62D84D4F000826505 /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 11944CD52D84D4F000826505 /* RxSwift */; };
 		11944CD92D856C8300826505 /* RxRelay in Frameworks */ = {isa = PBXBuildFile; productRef = 11944CD82D856C8300826505 /* RxRelay */; };
+		11944CDC2D88A4B700826505 /* RxDataSources in Frameworks */ = {isa = PBXBuildFile; productRef = 11944CDB2D88A4B700826505 /* RxDataSources */; };
 		11A5550D2D56386A00FA631A /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 11A5550C2D56386A00FA631A /* SnapKit */; };
 		11A555222D563A6100FA631A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 11A5551B2D563A6100FA631A /* Assets.xcassets */; };
 		11A555262D563A6100FA631A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A555162D563A6100FA631A /* SceneDelegate.swift */; };
@@ -26,7 +27,6 @@
 		11A555472D566B7300FA631A /* FavoriteItemsVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A555462D566B7000FA631A /* FavoriteItemsVM.swift */; };
 		11A555492D566E4100FA631A /* ItemsVMProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A555482D566E4100FA631A /* ItemsVMProtocol.swift */; };
 		11A5554B2D5673A100FA631A /* UITableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A5554A2D5673A000FA631A /* UITableView.swift */; };
-		11A5554D2D56753A00FA631A /* SelectorToClosure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A5554C2D56753900FA631A /* SelectorToClosure.swift */; };
 		11A555532D567A1C00FA631A /* Optional.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A555522D567A1B00FA631A /* Optional.swift */; };
 		11A555572D56838600FA631A /* Collection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A555562D56838500FA631A /* Collection.swift */; };
 		11A555592D5683F300FA631A /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A555582D5683F100FA631A /* Item.swift */; };
@@ -79,7 +79,6 @@
 		11A555462D566B7000FA631A /* FavoriteItemsVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteItemsVM.swift; sourceTree = "<group>"; };
 		11A555482D566E4100FA631A /* ItemsVMProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemsVMProtocol.swift; sourceTree = "<group>"; };
 		11A5554A2D5673A000FA631A /* UITableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITableView.swift; sourceTree = "<group>"; };
-		11A5554C2D56753900FA631A /* SelectorToClosure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectorToClosure.swift; sourceTree = "<group>"; };
 		11A555522D567A1B00FA631A /* Optional.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Optional.swift; sourceTree = "<group>"; };
 		11A555562D56838500FA631A /* Collection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Collection.swift; sourceTree = "<group>"; };
 		11A555582D5683F100FA631A /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
@@ -113,6 +112,7 @@
 				11944CD62D84D4F000826505 /* RxSwift in Frameworks */,
 				11944CD42D84D4F000826505 /* RxCocoa in Frameworks */,
 				11944CD92D856C8300826505 /* RxRelay in Frameworks */,
+				11944CDC2D88A4B700826505 /* RxDataSources in Frameworks */,
 				11A5550D2D56386A00FA631A /* SnapKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -173,7 +173,6 @@
 				11A555562D56838500FA631A /* Collection.swift */,
 				11A555522D567A1B00FA631A /* Optional.swift */,
 				11A5554A2D5673A000FA631A /* UITableView.swift */,
-				11A5554C2D56753900FA631A /* SelectorToClosure.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -347,6 +346,7 @@
 				11944CD32D84D4F000826505 /* RxCocoa */,
 				11944CD52D84D4F000826505 /* RxSwift */,
 				11944CD82D856C8300826505 /* RxRelay */,
+				11944CDB2D88A4B700826505 /* RxDataSources */,
 			);
 			productName = TestTaskUniverseGroup;
 			productReference = 11A554F32D56375D00FA631A /* TestTaskUniverseGroup.app */;
@@ -403,6 +403,7 @@
 			packageReferences = (
 				11A5550B2D56386A00FA631A /* XCRemoteSwiftPackageReference "SnapKit" */,
 				11944CD22D84D4F000826505 /* XCRemoteSwiftPackageReference "RxSwift" */,
+				11944CDA2D88A4B700826505 /* XCRemoteSwiftPackageReference "RxDataSources" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 11A554F42D56375D00FA631A /* Products */;
@@ -467,7 +468,6 @@
 				11A555342D5654E700FA631A /* SplashVM.swift in Sources */,
 				11A555492D566E4100FA631A /* ItemsVMProtocol.swift in Sources */,
 				11A5554B2D5673A100FA631A /* UITableView.swift in Sources */,
-				11A5554D2D56753A00FA631A /* SelectorToClosure.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -518,7 +518,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.oleksandr.ivanchenko.TestTaskUniverseGroup;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 6.0;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -545,7 +545,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.oleksandr.ivanchenko.TestTaskUniverseGroup;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 6.0;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -611,7 +611,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 6.0;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -668,7 +668,7 @@
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 6.0;
+				SWIFT_VERSION = 5.0;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -752,6 +752,14 @@
 				minimumVersion = 6.9.0;
 			};
 		};
+		11944CDA2D88A4B700826505 /* XCRemoteSwiftPackageReference "RxDataSources" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/RxSwiftCommunity/RxDataSources.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.2;
+			};
+		};
 		11A5550B2D56386A00FA631A /* XCRemoteSwiftPackageReference "SnapKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SnapKit/SnapKit.git";
@@ -777,6 +785,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 11944CD22D84D4F000826505 /* XCRemoteSwiftPackageReference "RxSwift" */;
 			productName = RxRelay;
+		};
+		11944CDB2D88A4B700826505 /* RxDataSources */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 11944CDA2D88A4B700826505 /* XCRemoteSwiftPackageReference "RxDataSources" */;
+			productName = RxDataSources;
 		};
 		11A5550C2D56386A00FA631A /* SnapKit */ = {
 			isa = XCSwiftPackageProductDependency;

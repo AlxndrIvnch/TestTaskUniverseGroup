@@ -7,7 +7,6 @@
 
 import UIKit
 
-@MainActor
 protocol ModuleFactoryProtocol {
     func makeSplashVC(onLoadedItems: @escaping EmptyClosure) -> UIViewController
     func makeAllItemsVC() -> UIViewController
@@ -25,7 +24,7 @@ final class ModuleFactory: ModuleFactoryProtocol {
     func makeSplashVC(onLoadedItems: @escaping EmptyClosure) -> UIViewController {
         let splashVM = SplashVM(itemsLoader: container.itemsLoader,
                                 itemsStore: container.itemsStore,
-                                onLoadedItems: onLoadedItems )
+                                onLoadedItems: onLoadedItems)
         return SplashVC(viewModel: splashVM)
     }
     

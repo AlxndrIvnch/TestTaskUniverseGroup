@@ -7,7 +7,6 @@
 
 import UIKit
 
-@MainActor
 final class FavoriteItemsCoordinator {
     
     private let moduleFactory: ModuleFactoryProtocol

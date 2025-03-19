@@ -7,7 +7,6 @@
 
 import UIKit
 
-@MainActor
 final class AppCoordinator {
     
     private let moduleFactory: ModuleFactoryProtocol

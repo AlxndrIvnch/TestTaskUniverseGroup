@@ -6,11 +6,13 @@
 //
 
 import Foundation
+import RxDataSources
 
 extension ItemCell {
     
-    struct ViewModel: Hashable {
+    struct ViewModel: IdentifiableType, Equatable {
         
+        var identity: Int { model.id }
         var text: String { model.title }
         var isFavorite: Bool { model.isFavorite }
         
@@ -18,14 +20,6 @@ extension ItemCell {
         
         init(model: Item) {
             self.model = model
-        }
-        
-        func hash(into hasher: inout Hasher) {
-            hasher.combine(model.id)
-        }
-        
-        static func == (lhs: ViewModel, rhs: ViewModel) -> Bool {
-            return lhs.model.id == rhs.model.id
         }
     }
 }
