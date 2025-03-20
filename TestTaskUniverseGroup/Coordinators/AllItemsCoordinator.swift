@@ -6,8 +6,9 @@
 //
 
 import UIKit
+import RxSwift
 
-final class AllItemsCoordinator {
+final class AllItemsCoordinator: BaseCoordinator<Never> {
     
     private let moduleFactory: ModuleFactoryProtocol
     
@@ -18,8 +19,10 @@ final class AllItemsCoordinator {
         self.moduleFactory = moduleFactory
     }
     
-    func start() {
-        let allItemsVC = moduleFactory.makeAllItemsVC()
+    override func start() -> Observable<Never> {
+        let (allItemsVC, allItemsVM) = moduleFactory.makeAllItemsModule()
         navigationController?.viewControllers = [allItemsVC]
+        // potentially do bindings with allItemsVM.output
+        return .never()
     }
 }

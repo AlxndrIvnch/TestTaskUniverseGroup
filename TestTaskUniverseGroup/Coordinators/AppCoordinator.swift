@@ -6,8 +6,9 @@
 //
 
 import UIKit
+import RxSwift
 
-final class AppCoordinator {
+final class AppCoordinator: BaseCoordinator<Never> {
     
     private let moduleFactory: ModuleFactoryProtocol
     private let window: UIWindow
@@ -17,18 +18,25 @@ final class AppCoordinator {
         self.moduleFactory = moduleFactory
     }
     
-    func start() {
-        showSplashScreen(onLoadedItems: showMainFlow)
+    override func start() -> Observable<Never> {
+        showSplashScreen()
+            .flatMap { [unowned self] _ in
+                showMainFlow()
+            }
+            .subscribe()
+            .disposed(by: disposeBag)
+        return .never()
     }
 
-    private func showSplashScreen(onLoadedItems: @escaping EmptyClosure) {
-        let splashVC = moduleFactory.makeSplashVC(onLoadedItems: onLoadedItems)
+    private func showSplashScreen() -> Observable<Void> {
+        let (splashVC, splashVM) = moduleFactory.makeSplashModule()
         window.rootViewController = splashVC
         window.makeKeyAndVisible()
+        return splashVM.output.itemsLoaded.asObservable()
     }
     
-    private func showMainFlow() {
+    private func showMainFlow() -> Observable<Never> {
         let tabBarCoordinator = TabBarCoordinator(window: window, moduleFactory: moduleFactory)
-        tabBarCoordinator.start()
+        return coordinate(to: tabBarCoordinator)
     }
 }

@@ -9,9 +9,11 @@ import UIKit
 
 extension UIWindow {
     
-    func setRootViewController(_ newRootViewController: UIViewController,
-                               duration: TimeInterval = 0.7,
-                               completion: (() -> Void)? = nil) {
+    func setRootViewControllerAnimated(
+        _ newRootViewController: UIViewController,
+        duration: TimeInterval = 0.7,
+        completion: (() -> Void)? = nil
+    ) {
         guard let snapshot = self.snapshotView(afterScreenUpdates: true) else {
             self.rootViewController = newRootViewController
             self.makeKeyAndVisible()
