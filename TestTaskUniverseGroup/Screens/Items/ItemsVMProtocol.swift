@@ -17,10 +17,10 @@ protocol ItemsVMProtocol: AnyObject {
 }
 
 struct ItemsVMInput {
-    let viewWillAppear: PublishRelay<Void>
-    let didSelectRow: PublishRelay<IndexPath>
-    let indexPathsForSelectedRows: PublishRelay<[IndexPath]>
-    let markItemsAction: PublishRelay<Bool>
+    let viewWillAppear: AnyObserver<Void>
+    let didSelectRow: AnyObserver<IndexPath>
+    let indexPathsForSelectedRows: AnyObserver<[IndexPath]>
+    let markItemsAction: AnyObserver<Bool>
 }
 
 struct ItemsVMOutput {

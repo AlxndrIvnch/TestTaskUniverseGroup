@@ -65,7 +65,7 @@ final class SplashVC: BaseVC {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        viewModel.input.viewDidLoad.accept(())
+        viewModel.input.viewDidLoad.onNext(())
     }
     
     override func setupView() {
@@ -111,7 +111,7 @@ final class SplashVC: BaseVC {
                 UIView.animate(withDuration: animated ? 0.4 : 0, delay: 0, options: [.curveEaseOut]) {
                     self.progressView.layoutIfNeeded()
                 } completion: { _ in
-                    self.viewModel.input.progressAnimationCompleted.accept(progress)
+                    self.viewModel.input.progressAnimationCompleted.onNext(progress)
                 }
             })
             .drive(progressView.rx.progress)

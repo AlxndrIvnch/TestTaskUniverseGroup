@@ -142,7 +142,7 @@ final class ItemsVC: BaseVC {
     
     override func viewIsAppearing(_ animated: Bool) {
         super.viewIsAppearing(animated)
-        viewModel.input.viewWillAppear.accept(())
+        viewModel.input.viewWillAppear.onNext(())
     }
     
     override func viewDidAppear(_ animated: Bool) {

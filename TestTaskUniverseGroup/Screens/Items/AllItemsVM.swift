@@ -23,10 +23,10 @@ final class AllItemsVM: ItemsVMProtocol {
     private let showRemoveFromFavoriteButton = Infallible.just(true)
     private let canRemoveFromFavorite: Infallible<Bool>
     private let selectedIDs: Infallible<[Int]>
-    private let viewWillAppear = PublishRelay<Void>()
-    private let didSelectRow = PublishRelay<IndexPath>()
-    private let indexPathsForSelectedRows = PublishRelay<[IndexPath]>()
-    private let markItemsAction = PublishRelay<Bool>()
+    private let viewWillAppear = PublishSubject<Void>()
+    private let didSelectRow = PublishSubject<IndexPath>()
+    private let indexPathsForSelectedRows = PublishSubject<[IndexPath]>()
+    private let markItemsAction = PublishSubject<Bool>()
     private let disposeBag = DisposeBag()
     
     init(itemsStore: ItemsStoreProtocol) {
@@ -38,7 +38,7 @@ final class AllItemsVM: ItemsVMProtocol {
         cellVMs = Infallible.merge(
             items.asInfallible(),
             viewWillAppear
-                .asInfallible()
+                .asInfallible(onErrorFallbackTo: .empty())
                 .withLatestFrom(items.asInfallible())
         )
         .flatMap {
@@ -52,7 +52,7 @@ final class AllItemsVM: ItemsVMProtocol {
         
         
         canMarkFavorite = Infallible.combineLatest(
-            indexPathsForSelectedRows.asInfallible(),
+            indexPathsForSelectedRows.asInfallible(onErrorFallbackTo: .empty()),
             items.asInfallible(),
             resultSelector: { indexPaths, items in
                 return indexPaths.contains {
@@ -62,7 +62,7 @@ final class AllItemsVM: ItemsVMProtocol {
         )
         
         canRemoveFromFavorite = Infallible.combineLatest(
-            indexPathsForSelectedRows.asInfallible(),
+            indexPathsForSelectedRows.asInfallible(onErrorFallbackTo: .empty()),
             items.asInfallible(),
             resultSelector: { indexPaths, items in
                 return indexPaths.contains {
@@ -72,7 +72,7 @@ final class AllItemsVM: ItemsVMProtocol {
         )
         
         selectedIDs = indexPathsForSelectedRows
-            .asInfallible()
+            .asInfallible(onErrorFallbackTo: .empty())
             .withLatestFrom(
                 items.asInfallible(),
                 resultSelector: { indexPaths, items in
@@ -81,10 +81,10 @@ final class AllItemsVM: ItemsVMProtocol {
             )
         
         input = .init(
-            viewWillAppear: viewWillAppear,
-            didSelectRow: didSelectRow,
-            indexPathsForSelectedRows: indexPathsForSelectedRows,
-            markItemsAction: markItemsAction
+            viewWillAppear: viewWillAppear.asObserver(),
+            didSelectRow: didSelectRow.asObserver(),
+            indexPathsForSelectedRows: indexPathsForSelectedRows.asObserver(),
+            markItemsAction: markItemsAction.asObserver()
         )
         
         output = .init(
@@ -98,7 +98,7 @@ final class AllItemsVM: ItemsVMProtocol {
         )
         
         didSelectRow
-            .asInfallible()
+            .asInfallible(onErrorFallbackTo: .empty())
             .withLatestFrom(
                 items.asInfallible(),
                 resultSelector: { indexPath, items in
@@ -111,7 +111,7 @@ final class AllItemsVM: ItemsVMProtocol {
             .disposed(by: disposeBag)
         
         markItemsAction
-            .asInfallible()
+            .asInfallible(onErrorFallbackTo: .empty())
             .withLatestFrom(
                 selectedIDs,
                 resultSelector: { asFavorite, ids in
@@ -127,7 +127,7 @@ final class AllItemsVM: ItemsVMProtocol {
         let isFavorite = item.isFavorite
         let title = isFavorite ? String(localized: "remove_item_from_favorites") : String(localized: "add_item_to_favorites")
         let actionVM = SwipeActionVM(title: title, isDestructive: isFavorite) { [weak self] completion in
-            self?.didSelectRow.accept(indexPath)
+            self?.didSelectRow.onNext(indexPath)
             completion(true)
         }
         return [actionVM]

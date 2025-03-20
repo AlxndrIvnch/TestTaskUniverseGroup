@@ -10,7 +10,7 @@ import RxSwift
 import RxCocoa
 
 protocol ItemsLoaderProtocol {
-    func loadItems(progress: PublishRelay<Float>?) -> Single<[Item]>
+    func loadItems(progress: AnyObserver<Float>?) -> Single<[Item]>
 }
 
 extension ItemsLoaderProtocol {
@@ -20,7 +20,7 @@ extension ItemsLoaderProtocol {
 }
 
 final class ItemsLoader: ItemsLoaderProtocol {
-    func loadItems(progress: PublishRelay<Float>? = nil) -> Single<[Item]> {
+    func loadItems(progress: AnyObserver<Float>? = nil) -> Single<[Item]> {
         let backgroundScheduler = ConcurrentDispatchQueueScheduler(qos: .background)
         return Single.create { single in
             let steps = 15
@@ -33,7 +33,7 @@ final class ItemsLoader: ItemsLoaderProtocol {
                         .delay(.milliseconds(delay), scheduler: backgroundScheduler)
                 }
                 .subscribe(
-                    onNext: progress?.accept,
+                    onNext: progress?.onNext,
                     onError: { single(.failure($0)) },
                     onCompleted: { single(.success(items)) }
                 )

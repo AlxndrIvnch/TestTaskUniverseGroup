@@ -12,8 +12,8 @@ import RxCocoa
 final class SplashVM {
     
     struct Input {
-        let viewDidLoad: PublishRelay<Void>
-        let progressAnimationCompleted: PublishRelay<Float>
+        let viewDidLoad: AnyObserver<Void>
+        let progressAnimationCompleted: AnyObserver<Float>
     }
     
     struct Output {
@@ -24,10 +24,10 @@ final class SplashVM {
     let input: Input
     let output: Output
     
-    private let viewDidLoad = PublishRelay<Void>()
-    private let progressAnimationCompleted = PublishRelay<Float>()
-    private let progress = PublishRelay<Float>()
-    private let error = PublishRelay<String?>()
+    private let viewDidLoad = PublishSubject<Void>()
+    private let progressAnimationCompleted = PublishSubject<Float>()
+    private let progress = PublishSubject<Float>()
+    private let error = PublishSubject<String?>()
     private let disposeBag = DisposeBag()
     
     init(itemsLoader: ItemsLoaderProtocol,
@@ -35,8 +35,8 @@ final class SplashVM {
          onLoadedItems: @escaping EmptyClosure) {
         
         input = .init(
-            viewDidLoad: viewDidLoad,
-            progressAnimationCompleted: progressAnimationCompleted
+            viewDidLoad: viewDidLoad.asObserver(),
+            progressAnimationCompleted: progressAnimationCompleted.asObserver()
         )
         
         output = .init(
@@ -49,11 +49,11 @@ final class SplashVM {
         )
 
         viewDidLoad
-            .asInfallible()
+            .asInfallible(onErrorFallbackTo: .empty())
             .flatMap { [unowned self] in
-                itemsLoader.loadItems(progress: progress)
+                itemsLoader.loadItems(progress: progress.asObserver())
                     .do(onError: { [unowned self] _ in
-                        error.accept(String(localized: "loading_error"))
+                        error.onNext(String(localized: "loading_error"))
                     })
                     .asInfallible(onErrorFallbackTo: .empty())
             }
@@ -61,8 +61,9 @@ final class SplashVM {
             .disposed(by: disposeBag)
         
         progressAnimationCompleted
+            .asInfallible(onErrorFallbackTo: .empty())
             .skip { $0 < 1 }
-            .subscribe(onNext: { _ in onLoadedItems() })
+            .bind(onNext: { _ in onLoadedItems() })
             .disposed(by: disposeBag)
     }
 }

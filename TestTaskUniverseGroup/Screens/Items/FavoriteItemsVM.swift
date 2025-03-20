@@ -23,10 +23,10 @@ final class FavoriteItemsVM: ItemsVMProtocol {
     private let showRemoveFromFavoriteButton = Infallible.just(true)
     private let canRemoveFromFavorite: Infallible<Bool>
     private let selectedIDs: Infallible<[Int]>
-    private let viewWillAppear = PublishRelay<Void>()
-    private let didSelectRow = PublishRelay<IndexPath>()
-    private let indexPathsForSelectedRows = PublishRelay<[IndexPath]>()
-    private let markItemsAction = PublishRelay<Bool>()
+    private let viewWillAppear = PublishSubject<Void>()
+    private let didSelectRow = PublishSubject<IndexPath>()
+    private let indexPathsForSelectedRows = PublishSubject<[IndexPath]>()
+    private let markItemsAction = PublishSubject<Bool>()
     private let disposeBag = DisposeBag()
     
     init(itemsStore: ItemsStoreProtocol) {
@@ -43,7 +43,7 @@ final class FavoriteItemsVM: ItemsVMProtocol {
         cellVMs = Infallible.merge(
             favoriteItems.asInfallible(),
             viewWillAppear
-                .asInfallible()
+                .asInfallible(onErrorFallbackTo: .empty())
                 .withLatestFrom(favoriteItems.asInfallible())
         )
         .flatMap {
@@ -56,11 +56,11 @@ final class FavoriteItemsVM: ItemsVMProtocol {
             .map { $0.isEmpty ? String(localized: "favorites_empty") : nil }
         
         canRemoveFromFavorite = indexPathsForSelectedRows
-            .asInfallible()
+            .asInfallible(onErrorFallbackTo: .empty())
             .map { !$0.isEmpty }
         
         selectedIDs = indexPathsForSelectedRows
-            .asInfallible()
+            .asInfallible(onErrorFallbackTo: .empty())
             .withLatestFrom(
                 favoriteItems.asInfallible(),
                 resultSelector: { indexPaths, items in
@@ -69,10 +69,10 @@ final class FavoriteItemsVM: ItemsVMProtocol {
             )
         
         input = .init(
-            viewWillAppear: viewWillAppear,
-            didSelectRow: didSelectRow,
-            indexPathsForSelectedRows: indexPathsForSelectedRows,
-            markItemsAction: markItemsAction
+            viewWillAppear: viewWillAppear.asObserver(),
+            didSelectRow: didSelectRow.asObserver(),
+            indexPathsForSelectedRows: indexPathsForSelectedRows.asObserver(),
+            markItemsAction: markItemsAction.asObserver()
         )
         
         output = .init(
@@ -86,7 +86,7 @@ final class FavoriteItemsVM: ItemsVMProtocol {
         )
         
         didSelectRow
-            .asInfallible()
+            .asInfallible(onErrorFallbackTo: .empty())
             .withLatestFrom(
                 favoriteItems.asInfallible(),
                 resultSelector: { indexPath, items in
@@ -99,7 +99,7 @@ final class FavoriteItemsVM: ItemsVMProtocol {
             .disposed(by: disposeBag)
         
         markItemsAction
-            .asInfallible()
+            .asInfallible(onErrorFallbackTo: .empty())
             .withLatestFrom(
                 selectedIDs,
                 resultSelector: {
@@ -115,7 +115,7 @@ final class FavoriteItemsVM: ItemsVMProtocol {
             title: String(localized: "remove_item_from_favorites"),
             isDestructive: true
         ) { [weak self] completion in
-            self?.didSelectRow.accept(indexPath)
+            self?.didSelectRow.onNext(indexPath)
             completion(true)
         }
         return [actionVM]
