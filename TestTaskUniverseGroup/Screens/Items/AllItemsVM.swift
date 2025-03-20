@@ -6,90 +6,130 @@
 //
 
 import Foundation
-import UIKit.NSDiffableDataSourceSectionSnapshot
+import RxSwift
+import RxCocoa
 
 final class AllItemsVM: ItemsVMProtocol {
     
-    var onUpdateUI: EmptyClosure?
-    var onLoading: SimpleClosure<Bool>?
+    let input: ItemsVMInput
+    let output: ItemsVMOutput
     
-    var title: String { String(localized: "all_items_screen_title") }
-    var showRemoveFromFavoriteButton: Bool { true }
-    var showMarkFavoriteButton: Bool { true }
-    var textWhenEmpty: String { String(localized: "no_items") }
-    
-    private let itemsStore: ItemsStoreProtocol
-    
-    private var items = [Item]()
-    private var storeFetchTask: Task<Void, Never>?
-    private var lastSnapshot: NSDiffableDataSourceSnapshot<Int, ItemCell.ViewModel>?
+    private let title = Infallible.just(String(localized: "all_items_screen_title"))
+    private let items = BehaviorRelay<[Item]>(value: [])
+    private let cellVMs: Infallible<[ItemCell.ViewModel]>
+    private let emptyStateText: Infallible<String?>
+    private let showMarkFavoriteButton = Infallible.just(true)
+    private let canMarkFavorite: Infallible<Bool>
+    private let showRemoveFromFavoriteButton = Infallible.just(true)
+    private let canRemoveFromFavorite: Infallible<Bool>
+    private let selectedIDs: Infallible<[Int]>
+    private let viewWillAppear = PublishSubject<Void>()
+    private let didSelectRow = PublishSubject<IndexPath>()
+    private let indexPathsForSelectedRows = PublishSubject<[IndexPath]>()
+    private let markItemsAction = PublishSubject<Bool>()
+    private let disposeBag = DisposeBag()
     
     init(itemsStore: ItemsStoreProtocol) {
-        self.itemsStore = itemsStore
-        storeFetchTask = Task {
-            for await items in await itemsStore.updates {
-                self.items = items
-                onUpdateUI?()
+        
+        itemsStore.items
+            .bind(to: items)
+            .disposed(by: disposeBag)
+        
+        cellVMs = Infallible.merge(
+            items.asInfallible(),
+            viewWillAppear
+                .asInfallible(onErrorFallbackTo: .empty())
+                .withLatestFrom(items.asInfallible())
+        )
+        .flatMap {
+            Observable.from($0)
+                .map(ItemCell.ViewModel.init)
+                .toArray()
+        }
+        
+        emptyStateText = cellVMs
+            .map { $0.isEmpty ? String(localized: "no_items") : nil }
+        
+        
+        canMarkFavorite = Infallible.combineLatest(
+            indexPathsForSelectedRows.asInfallible(onErrorFallbackTo: .empty()),
+            items.asInfallible(),
+            resultSelector: { indexPaths, items in
+                return indexPaths.contains {
+                    items[safe: $0.row]?.isFavorite == false
+                }
             }
-        }
-    }
-    
-    deinit {
-        storeFetchTask?.cancel()
-    }
-    
-    func createSnapshot() -> NSDiffableDataSourceSnapshot<Int, ItemCell.ViewModel> {
-        var snapshot = NSDiffableDataSourceSnapshot<Int, ItemCell.ViewModel>()
-        snapshot.appendSections([0])
+        )
         
-        let currentVMs = items.map(ItemCell.ViewModel.init)
-        snapshot.appendItems(currentVMs)
+        canRemoveFromFavorite = Infallible.combineLatest(
+            indexPathsForSelectedRows.asInfallible(onErrorFallbackTo: .empty()),
+            items.asInfallible(),
+            resultSelector: { indexPaths, items in
+                return indexPaths.contains {
+                    items[safe: $0.row]?.isFavorite == true
+                }
+            }
+        )
         
-        let updatedVMs = currentVMs.filter { viewModel in
-            let viewModelInPrevious = lastSnapshot?.itemIdentifiers.first { $0 == viewModel }
-            guard let viewModelInPrevious else { return false }
-            return viewModelInPrevious.isFavorite != viewModel.isFavorite
-        }
-        snapshot.reconfigureItems(updatedVMs)
-    
-        lastSnapshot = snapshot
-        return snapshot
-    }
-    
-    func markItems(at indexPaths: [IndexPath], asFavorite: Bool) async {
-        onLoading?(true)
-        let ids = indexPaths.compactMap { items[safe: $0.row]?.id }
-        await itemsStore.markItems(with: ids, asFavorite: asFavorite)
-        onLoading?(false)
-    }
-    
-    func toggleItemIsFavorite(at indexPath: IndexPath) async {
-        guard let item = items[safe: indexPath.row] else { return }
-        await markItems(at: [indexPath], asFavorite: !item.isFavorite)
+        selectedIDs = indexPathsForSelectedRows
+            .asInfallible(onErrorFallbackTo: .empty())
+            .withLatestFrom(
+                items.asInfallible(),
+                resultSelector: { indexPaths, items in
+                    indexPaths.compactMap { items[safe: $0.row]?.id }
+                }
+            )
+        
+        input = .init(
+            viewWillAppear: viewWillAppear.asObserver(),
+            didSelectRow: didSelectRow.asObserver(),
+            indexPathsForSelectedRows: indexPathsForSelectedRows.asObserver(),
+            markItemsAction: markItemsAction.asObserver()
+        )
+        
+        output = .init(
+            title: title.asDriver(),
+            emptyStateText: emptyStateText.asDriver(),
+            cellVMs: cellVMs.asDriver(),
+            canMarkFavorite: canMarkFavorite.asDriver(),
+            showMarkFavoriteButton: showMarkFavoriteButton.asDriver(),
+            canRemoveFromFavorite: canRemoveFromFavorite.asDriver(),
+            showRemoveFromFavoriteButton: showRemoveFromFavoriteButton.asDriver()
+        )
+        
+        didSelectRow
+            .asInfallible(onErrorFallbackTo: .empty())
+            .withLatestFrom(
+                items.asInfallible(),
+                resultSelector: { indexPath, items in
+                    guard let item = items[safe: indexPath.row] else { return nil }
+                    return (ids: [item.id], asFavorite: !item.isFavorite)
+                }
+            )
+            .compactMap { $0 }
+            .bind(onNext: itemsStore.markItems)
+            .disposed(by: disposeBag)
+        
+        markItemsAction
+            .asInfallible(onErrorFallbackTo: .empty())
+            .withLatestFrom(
+                selectedIDs,
+                resultSelector: { asFavorite, ids in
+                    (ids, asFavorite)
+                }
+            )
+            .bind(onNext: itemsStore.markItems)
+            .disposed(by: disposeBag)
     }
     
     func getLeadingSwipeActions(for indexPath: IndexPath) -> [SwipeActionVM]? {
-        guard let item = items[safe: indexPath.row] else { return nil }
+        guard let item = items.value[safe: indexPath.row] else { return nil }
         let isFavorite = item.isFavorite
         let title = isFavorite ? String(localized: "remove_item_from_favorites") : String(localized: "add_item_to_favorites")
         let actionVM = SwipeActionVM(title: title, isDestructive: isFavorite) { [weak self] completion in
-            Task {
-                await self?.markItems(at: [indexPath], asFavorite: !isFavorite)
-                completion(true)
-            }
+            self?.didSelectRow.onNext(indexPath)
+            completion(true)
         }
         return [actionVM]
-    }
-    
-    func canMarkFavorite(at indexPaths: [IndexPath]) -> Bool {
-        return indexPaths.contains {
-            items[safe: $0.row]?.isFavorite == false
-        }
-    }
-    
-    func canRemoveFromFavorite(at indexPaths: [IndexPath]) -> Bool {
-        return indexPaths.contains {
-            items[safe: $0.row]?.isFavorite == true
-        }
     }
 }

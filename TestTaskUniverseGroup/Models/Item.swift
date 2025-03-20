@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Item {
+struct Item: Equatable {
     let id: Int
     let title: String
     

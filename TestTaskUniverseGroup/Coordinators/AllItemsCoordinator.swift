@@ -7,7 +7,6 @@
 
 import UIKit
 
-@MainActor
 final class AllItemsCoordinator {
     
     private let moduleFactory: ModuleFactoryProtocol
