@@ -19,6 +19,7 @@ final class SplashVM {
     struct Output {
         let progress: Driver<Float>
         let error: Driver<String?>
+        let itemsLoaded: Infallible<Void>
     }
         
     let input: Input
@@ -28,11 +29,11 @@ final class SplashVM {
     private let progressAnimationCompleted = PublishSubject<Float>()
     private let progress = PublishSubject<Float>()
     private let error = PublishSubject<String?>()
+    private let itemsLoaded = PublishRelay<Void>()
     private let disposeBag = DisposeBag()
     
     init(itemsLoader: ItemsLoaderProtocol,
-         itemsStore: ItemsStoreProtocol,
-         onLoadedItems: @escaping EmptyClosure) {
+         itemsStore: ItemsStoreProtocol) {
         
         input = .init(
             viewDidLoad: viewDidLoad.asObserver(),
@@ -45,7 +46,8 @@ final class SplashVM {
                 .asDriver(onErrorDriveWith: .empty()),
             error: error
                 .startWith(nil)
-                .asDriver(onErrorDriveWith: .empty())
+                .asDriver(onErrorDriveWith: .empty()),
+            itemsLoaded: itemsLoaded.asInfallible()
         )
 
         viewDidLoad
@@ -63,7 +65,8 @@ final class SplashVM {
         progressAnimationCompleted
             .asInfallible(onErrorFallbackTo: .empty())
             .skip { $0 < 1 }
-            .bind(onNext: { _ in onLoadedItems() })
+            .map { _ in }
+            .bind(onNext: itemsLoaded.accept)
             .disposed(by: disposeBag)
     }
 }

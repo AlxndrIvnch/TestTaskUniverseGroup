@@ -6,8 +6,9 @@
 //
 
 import UIKit
+import RxSwift
 
-final class FavoriteItemsCoordinator {
+final class FavoriteItemsCoordinator: BaseCoordinator<Never> {
     
     private let moduleFactory: ModuleFactoryProtocol
     
@@ -18,8 +19,10 @@ final class FavoriteItemsCoordinator {
         self.moduleFactory = moduleFactory
     }
     
-    func start() {
-        let favoriteItemsVC = moduleFactory.makeFavoriteItemsVC()
+    override func start() -> Observable<Never> {
+        let (favoriteItemsVC, favoriteItemsVM) = moduleFactory.makeFavoriteItemsModule()
         navigationController?.viewControllers = [favoriteItemsVC]
+        // potentially do bindings with favoriteItemsVM.output
+        return .never()
     }
 }

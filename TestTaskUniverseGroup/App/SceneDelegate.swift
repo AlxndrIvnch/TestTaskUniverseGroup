@@ -6,10 +6,13 @@
 //
 
 import UIKit
+import RxSwift
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
+       
+    private let disposeBag = DisposeBag()
     
     private var appCoordinator: AppCoordinator?
 
@@ -23,5 +26,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let factory = ModuleFactory(container: container)
         appCoordinator = AppCoordinator(window: window, moduleFactory: factory)
         appCoordinator?.start()
+            .subscribe()
+            .disposed(by: disposeBag)
     }
 }

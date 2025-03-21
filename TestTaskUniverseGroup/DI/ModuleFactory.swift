@@ -8,9 +8,9 @@
 import UIKit
 
 protocol ModuleFactoryProtocol {
-    func makeSplashVC(onLoadedItems: @escaping EmptyClosure) -> UIViewController
-    func makeAllItemsVC() -> UIViewController
-    func makeFavoriteItemsVC() -> UIViewController
+    func makeSplashModule() -> (vc: SplashVC, vm: SplashVM)
+    func makeAllItemsModule() -> (vc: ItemsVC, vm: AllItemsVM)
+    func makeFavoriteItemsModule() -> (vc: ItemsVC, vm: FavoriteItemsVM)
 }
 
 final class ModuleFactory: ModuleFactoryProtocol {
@@ -21,20 +21,22 @@ final class ModuleFactory: ModuleFactoryProtocol {
         self.container = container
     }
     
-    func makeSplashVC(onLoadedItems: @escaping EmptyClosure) -> UIViewController {
+    func makeSplashModule() -> (vc: SplashVC, vm: SplashVM) {
         let splashVM = SplashVM(itemsLoader: container.itemsLoader,
-                                itemsStore: container.itemsStore,
-                                onLoadedItems: onLoadedItems)
-        return SplashVC(viewModel: splashVM)
+                                itemsStore: container.itemsStore)
+        let splashVC = SplashVC(viewModel: splashVM)
+        return (splashVC, splashVM)
     }
     
-    func makeAllItemsVC() -> UIViewController {
+    func makeAllItemsModule() -> (vc: ItemsVC, vm: AllItemsVM) {
         let allItemsVM = AllItemsVM(itemsStore: container.itemsStore)
-        return ItemsVC(viewModel: allItemsVM)
+        let allItemsVC = ItemsVC(viewModel: allItemsVM)
+        return (allItemsVC, allItemsVM)
     }
     
-    func makeFavoriteItemsVC() -> UIViewController {
+    func makeFavoriteItemsModule() -> (vc: ItemsVC, vm: FavoriteItemsVM) {
         let favoriteItemsVM = FavoriteItemsVM(itemsStore: container.itemsStore)
-        return ItemsVC(viewModel: favoriteItemsVM)
+        let favoriteItemsVC = ItemsVC(viewModel: favoriteItemsVM)
+        return (favoriteItemsVC, favoriteItemsVM)
     }
 }

@@ -11,6 +11,7 @@
 		11944CD62D84D4F000826505 /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 11944CD52D84D4F000826505 /* RxSwift */; };
 		11944CD92D856C8300826505 /* RxRelay in Frameworks */ = {isa = PBXBuildFile; productRef = 11944CD82D856C8300826505 /* RxRelay */; };
 		11944CDC2D88A4B700826505 /* RxDataSources in Frameworks */ = {isa = PBXBuildFile; productRef = 11944CDB2D88A4B700826505 /* RxDataSources */; };
+		11944CDE2D8C5B0900826505 /* BaseCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11944CDD2D8C5B0700826505 /* BaseCoordinator.swift */; };
 		11A5550D2D56386A00FA631A /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 11A5550C2D56386A00FA631A /* SnapKit */; };
 		11A555222D563A6100FA631A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 11A5551B2D563A6100FA631A /* Assets.xcassets */; };
 		11A555262D563A6100FA631A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11A555162D563A6100FA631A /* SceneDelegate.swift */; };
@@ -62,6 +63,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		11944CDD2D8C5B0700826505 /* BaseCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseCoordinator.swift; sourceTree = "<group>"; };
 		11A554F32D56375D00FA631A /* TestTaskUniverseGroup.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TestTaskUniverseGroup.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		11A555162D563A6100FA631A /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		11A5551A2D563A6100FA631A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -156,6 +158,7 @@
 		11A555132D563A6100FA631A /* Coordinators */ = {
 			isa = PBXGroup;
 			children = (
+				11944CDD2D8C5B0700826505 /* BaseCoordinator.swift */,
 				11A5552C2D56510200FA631A /* AppCoordinator.swift */,
 				11A5552E2D5651DA00FA631A /* TabBarCoordinator.swift */,
 				11A5556A2D57B6B900FA631A /* AllItemsCoordinator.swift */,
@@ -451,6 +454,7 @@
 				11A5555B2D56897600FA631A /* ItemsStore.swift in Sources */,
 				11A555392D565C0900FA631A /* BaseVC.swift in Sources */,
 				11A555532D567A1C00FA631A /* Optional.swift in Sources */,
+				11944CDE2D8C5B0900826505 /* BaseCoordinator.swift in Sources */,
 				11A555262D563A6100FA631A /* SceneDelegate.swift in Sources */,
 				11A555572D56838600FA631A /* Collection.swift in Sources */,
 				11A555762D5803FC00FA631A /* UIWindow.swift in Sources */,
